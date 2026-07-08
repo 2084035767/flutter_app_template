@@ -62,3 +62,36 @@ Completed full P0 quality audit: R1 LoginPage memory leak (Stateless→StatefulW
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Dependency upgrade: signals v7 + signals_lint
+
+**Date**: 2026-07-08
+**Task**: Dependency upgrade: signals v7 + signals_lint
+**Branch**: `master`
+
+### Summary
+
+Upgraded 59+ dependencies: signals_flutter 6→7 (Watch.builder→SignalBuilder), injectable 2→3, analyzer 10→13, flutter_gen 5.12→5.14, and many more. Added signals_lint 7.1 via analysis_server_plugin. Fixed deprecated onDispose→EffectOptions API. All flutter analyze zero issues.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0993b51` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
