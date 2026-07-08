@@ -25,6 +25,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "13.0.0"
+  analyzer_buffer:
+    dependency: transitive
+    description:
+      name: analyzer_buffer
+      sha256: "445b77e2054fa3e8c8a8ef1b5e9e6b23bb8028fffd34b5e60eaef315b7750674"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.3"
   analyzer_plugin:
     dependency: transitive
     description:
@@ -472,6 +480,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed:
+    dependency: "direct dev"
+    description:
+      name: freezed
+      sha256: "9ec135696554923c59339d46dd50adbaf81099be06ffda0fb9c06f410aea9137"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.0-dev.3"
   freezed_annotation:
     dependency: "direct main"
     description:

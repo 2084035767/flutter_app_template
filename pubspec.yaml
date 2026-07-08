@@ -67,6 +67,7 @@ dev_dependencies:
   flutter_gen_runner: ^5.12.0
   retrofit_generator: ^10.2.1
   signals_lint: 7.1.0
+  freezed: ^4.0.0-dev.3
 
 # --- Flutter Launcher Icons Plugin ---
 flutter_launcher_icons:

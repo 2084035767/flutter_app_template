@@ -1,17 +1,16 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'article.freezed.dart';
 part 'article.g.dart';
 
-@JsonSerializable()
-class Article {
-  final int id;
-  final String title;
-  final String body;
-
-  Article({required this.id, required this.title, this.body = ''});
+@freezed
+sealed class Article with _$Article {
+  const factory Article({
+    required int id,
+    required String title,
+    required String body,
+  }) = _Article;
 
   factory Article.fromJson(Map<String, dynamic> json) =>
       _$ArticleFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ArticleToJson(this);
 }
