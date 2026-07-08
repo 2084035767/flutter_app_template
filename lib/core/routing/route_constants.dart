@@ -1,17 +1,19 @@
 abstract class RoutePaths {
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String home = '/home';
-  static const String articles = '/articles';
-  static const String profile = '/profile';
-  static const String articleDetail = '/articles/:id';
+  static const splash = '/splash';
+  static const login = '/login';
+  static const home = '/home';
+  static const articles = '/articles';
+  static const profile = '/profile';
+  static const notFound = '/notfound';
+  static const articleDetail = '/articles/:id';
 }
 
 abstract class RouteNames {
-  static const String splash = 'splash';
-  static const String login = 'login';
-  static const String home = 'home';
-  static const String articles = 'articles';
-  static const String profile = 'profile';
-  static const String articleDetail = 'articleDetail';
+  static const splash = 'splash';
+  static const login = 'login';
+  static const home = 'home';
+  static const articles = 'articles';
+  static const profile = 'profile';
+  static const notFound = 'notFound';
+  static const articleDetail = 'article-detail';
 }

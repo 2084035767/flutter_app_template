@@ -57,8 +57,8 @@ class AppRouter {
 
       // 文章详情（独立页面，不需要底部导航）
       GoRoute(
-        name: 'article-detail',
-        path: '/articles/:id',
+        name: RouteNames.articleDetail,
+        path: RoutePaths.articleDetail,
         builder: (_, state) {
           final id = state.getInt('id');
           return ArticleDetailPage(articleId: id);

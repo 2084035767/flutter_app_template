@@ -184,3 +184,31 @@ When reviewing frontend code, check:
 - [ ] Are assets referenced via `Assets.xxx` (generated) not string paths?
 - [ ] Are imports clean (no unused imports)?
 - [ ] Is `print()` avoided (using `Logging` or `debugPrint` instead)?
+
+---
+
+## Testing Requirements
+
+This scaffold provides reference tests as templates for new features:
+
+### Unit Tests
+
+- `test/shared/view_models/base_view_model_test.dart` — tests `runAsync` helper, `disposed` guard, and effect lifecycle
+- Use `flutter test <file>` to run individual test files
+
+### Widget Tests
+
+- `test/features/auth/page/login_page_test.dart` — tests rendering, button state, and loading indicator
+- Mock ViewModels via `getIt.registerFactory` override in `setUp`/`tearDown`
+- Use `tester.pumpWidget(MaterialApp(home: Widget))` to render under test
+
+### Code Review: Testing Checklist
+
+When reviewing test files for new features, check:
+
+- [ ] Test file mirrors the `lib/` directory structure
+- [ ] Test file name ends with `_test.dart`
+- [ ] DI is properly set up in `setUp` and cleaned in `tearDown`
+- [ ] ViewModels are disposed after each test
+- [ ] Widget tests use `tester.pumpAndSettle()` for async UI updates
+- [ ] `flutter test` passes for the new test file
