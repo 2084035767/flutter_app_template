@@ -21,7 +21,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
   void initState() {
     super.initState();
     _vm = getIt<ArticleViewModel>();
-    _vm.load();
+    // futureSignal 自动加载，无需手动调用 _vm.load()
   }
 
   @override
@@ -33,14 +33,14 @@ class _ArticleListPageState extends State<ArticleListPage> {
         builder: (context) {
           final async = _vm.articles.value;
 
-          if (async.isLoading && _vm.articleList.isEmpty) {
+          if (async.isLoading && (_vm.articleList).isEmpty) {
             return const LoadingIndicator();
           }
 
-          if (_vm.hasListError && _vm.articleList.isEmpty) {
+          if (_vm.hasListError && (_vm.articleList).isEmpty) {
             return ErrorText(
               error: _vm.errorMessage ?? '加载失败',
-              onRetry: () => _vm.load(),
+              onRetry: () => _vm.articles.reload(),
             );
           }
 
@@ -53,7 +53,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
           }
 
           return RefreshIndicator(
-            onRefresh: () async => _vm.load(),
+            onRefresh: () => _vm.articles.reload(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: list.length,

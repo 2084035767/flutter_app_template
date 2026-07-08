@@ -10,25 +10,27 @@ import '../domain/models/article.dart';
 
 /// 文章 ViewModel
 ///
-/// 负责处理文章列表和详情相关的状态和业务逻辑
+/// 负责处理文章列表和详情相关的状态和业务逻辑。
+/// 列表使用 [futureSignal] 自动管理 loading→data/error 状态，
+/// 详情由 action 触发，使用 dispose-guarded 手动模式。
 @injectable
 class ArticleViewModel extends BaseViewModel {
   final ArticleRepository _repo;
 
   @factoryMethod
   ArticleViewModel(this._repo) {
-    // 初始化 effect 监听
+    articles = futureSignal<List<Article>>(() async {
+      final result = await _repo.getArticles();
+      return result.when(success: (data) => data, failure: (f) => throw f);
+    });
     _initEffects();
   }
 
-  /// 文章列表异步状态
-  final articles = asyncSignal<List<Article>>(AsyncState.loading());
+  /// 文章列表 — futureSignal 自动处理 loading→data/error
+  late final FutureSignal<List<Article>> articles;
 
-  /// 选中文章异步状态
+  /// 选中文章异步状态（action 触发，手动管理）
   final selectedArticle = asyncSignal<Article?>(AsyncState.data(null));
-
-  /// 当前失败信息
-  final currentFailure = signal<Failure?>(null);
 
   /// 是否正在加载列表
   bool get isLoadingList => articles.value.isLoading;
@@ -37,8 +39,7 @@ class ArticleViewModel extends BaseViewModel {
   bool get isLoadingDetail => selectedArticle.value.isLoading;
 
   /// 列表是否有错误
-  bool get hasListError =>
-      articles.value.hasError || currentFailure.value != null;
+  bool get hasListError => articles.value.hasError;
 
   /// 详情是否有错误
   bool get hasDetailError => selectedArticle.value.hasError;
@@ -51,18 +52,13 @@ class ArticleViewModel extends BaseViewModel {
 
   /// 获取错误消息
   String? get errorMessage {
-    if (currentFailure.value != null) {
-      return currentFailure.value!.message;
-    }
     if (articles.value.hasError) {
       return articles.value.error?.toString();
     }
     return null;
   }
 
-  /// 初始化 effect 监听
   void _initEffects() {
-    // 监听文章列表状态变化
     addEffect(() {
       if (kReleaseMode) return;
       final state = articles.value;
@@ -72,8 +68,6 @@ class ArticleViewModel extends BaseViewModel {
         debugPrint('文章列表加载错误：${state.error}');
       }
     });
-
-    // 监听选中文章状态变化
     addEffect(() {
       if (kReleaseMode) return;
       final state = selectedArticle.value;
@@ -83,24 +77,12 @@ class ArticleViewModel extends BaseViewModel {
     });
   }
 
-  /// 加载文章列表
-  Future<Result<void, Failure>> load() async {
-    final failure = await runAsync(
-      () => _repo.getArticles(),
-      into: articles,
-      failInto: currentFailure,
-    );
-    if (failure != null) return Result.failure(failure);
-    return const Result.success(null);
-  }
-
-  /// 加载文章详情
+  /// 加载文章详情（action 触发，手动管理）
   Future<Result<void, Failure>> loadDetail(int id) async {
     selectedArticle.value = AsyncState.loading();
-    currentFailure.value = null;
 
     final result = await _repo.getArticle(id);
-    if (disposed) return const Result.failure(Failure.unknown('ViewModel已释放'));
+    if (disposed) return const Result.failure(Failure.unknown('已释放'));
 
     return result.when(
       success: (data) {
@@ -109,16 +91,9 @@ class ArticleViewModel extends BaseViewModel {
       },
       failure: (failure) {
         selectedArticle.value = AsyncState.error(failure.message);
-        currentFailure.value = failure;
         return Result.failure(failure);
       },
     );
-  }
-
-  /// 刷新文章列表
-  Future<Result<void, Failure>> refresh() async {
-    if (articles.value.isLoading) return const Result.success(null);
-    return await load();
   }
 
   /// 清空选中的文章
@@ -126,20 +101,9 @@ class ArticleViewModel extends BaseViewModel {
     selectedArticle.value = AsyncState.data(null);
   }
 
-  /// 清除错误
-  void clearError() {
-    currentFailure.value = null;
-  }
-
-  /// 从列表中移除文章
-  void removeArticle(int id) {
-    final state = articles.value;
-    if (state.hasValue) {
-      final currentList = state.value ?? [];
-      articles.value = AsyncState.data(
-        currentList.where((a) => a.id != id).toList(),
-      );
-    }
+  /// 刷新文章列表
+  Future<void> refresh() async {
+    await articles.reload();
   }
 
   @override

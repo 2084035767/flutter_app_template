@@ -16,15 +16,11 @@ class AuthViewModel extends BaseViewModel {
   final AuthRepository _repo;
 
   AuthViewModel(this._repo) {
-    // 初始化 effect 监听
     _initEffects();
   }
 
-  /// 用户异步状态
+  /// 用户异步状态（内建 loading/error/data）
   final user = asyncSignal<User?>(AsyncState.data(null));
-
-  /// 当前失败信息
-  final currentFailure = signal<Failure?>(null);
 
   /// 邮箱输入
   final email = signal('');
@@ -39,25 +35,15 @@ class AuthViewModel extends BaseViewModel {
   bool get isLoading => user.value.isLoading;
 
   /// 是否有错误
-  bool get hasError => user.value.hasError || currentFailure.value != null;
+  bool get hasError => user.value.hasError;
 
   /// 当前用户数据
   User? get currentUser => user.value.value;
 
   /// 获取错误消息
-  String? get errorMessage {
-    if (currentFailure.value != null) {
-      return currentFailure.value!.message;
-    }
-    if (user.value.hasError) {
-      return user.value.error?.toString();
-    }
-    return null;
-  }
+  String? get errorMessage => user.value.error?.toString();
 
-  /// 初始化 effect 监听
   void _initEffects() {
-    // 监听用户状态变化
     addEffect(() {
       if (kReleaseMode) return;
       final state = user.value;
@@ -67,8 +53,6 @@ class AuthViewModel extends BaseViewModel {
         debugPrint('用户状态错误：${state.error}');
       }
     });
-
-    // 监听表单输入变化
     addEffect(() {
       if (kReleaseMode) return;
       debugPrint('邮箱输入：${email.value}');
@@ -82,7 +66,6 @@ class AuthViewModel extends BaseViewModel {
   /// 登录
   Future<Result<void, Failure>> login() async {
     user.value = AsyncState.loading();
-    currentFailure.value = null;
 
     final result = await _repo.login(email.value, password.value);
     if (disposed) return const Result.failure(Failure.unknown('ViewModel已释放'));
@@ -94,7 +77,6 @@ class AuthViewModel extends BaseViewModel {
       },
       failure: (failure) {
         user.value = AsyncState.error(failure.message);
-        currentFailure.value = failure;
         return Result.failure(failure);
       },
     );
@@ -108,11 +90,10 @@ class AuthViewModel extends BaseViewModel {
     return result.when(
       success: (_) {
         user.value = AsyncState.data(null);
-        currentFailure.value = null;
         return const Result.success(null);
       },
       failure: (failure) {
-        currentFailure.value = failure;
+        user.value = AsyncState.error(failure.message);
         return Result.failure(failure);
       },
     );
@@ -122,12 +103,12 @@ class AuthViewModel extends BaseViewModel {
   void resetForm() {
     email.value = '';
     password.value = '';
-    currentFailure.value = null;
+    user.value = AsyncState.data(currentUser);
   }
 
   /// 清除错误
   void clearError() {
-    currentFailure.value = null;
+    user.value = AsyncState.data(currentUser);
   }
 
   /// 更新邮箱

@@ -43,9 +43,7 @@ void main() {
 
   group('LoginPage', () {
     testWidgets('renders email and password fields', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: LoginPage()),
-      );
+      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
 
       expect(find.text('邮箱'), findsOneWidget);
       expect(find.text('密码'), findsOneWidget);
@@ -53,19 +51,16 @@ void main() {
     });
 
     testWidgets('button is disabled when fields are empty', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: LoginPage()),
-      );
+      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
 
       final button = tester.widget<FilledButton>(find.byType(FilledButton));
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('button is enabled when email and password are valid',
-        (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: LoginPage()),
-      );
+    testWidgets('button is enabled when email and password are valid', (
+      tester,
+    ) async {
+      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
 
       await tester.enterText(find.byType(TextField).first, 'test@example.com');
       await tester.enterText(find.byType(TextField).last, 'password123');
@@ -78,9 +73,7 @@ void main() {
     testWidgets('shows loading indicator when logging in', (tester) async {
       vm.user.value = AsyncState.loading();
 
-      await tester.pumpWidget(
-        const MaterialApp(home: LoginPage()),
-      );
+      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
       await tester.pump();
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
