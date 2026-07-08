@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: '密码'),
             ),
             const SizedBox(height: 24),
-            Watch.builder(
+            SignalBuilder(
               builder: (context) {
                 final async = vm.user.value;
                 if (async.isLoading) {

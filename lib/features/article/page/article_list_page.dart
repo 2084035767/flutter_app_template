@@ -29,7 +29,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: Watch.builder(
+      body: SignalBuilder(
         builder: (context) {
           final async = _vm.articles.value;
 

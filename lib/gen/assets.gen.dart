@@ -25,5 +25,9 @@ class $AssetsJsonGen {
 class Assets {
   const Assets._();
 
+  static const String aEnv = '.env';
   static const $AssetsJsonGen json = $AssetsJsonGen();
+
+  /// List of all assets
+  static List<String> get values => [aEnv];
 }

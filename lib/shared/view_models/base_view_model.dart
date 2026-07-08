@@ -35,9 +35,11 @@ abstract class BaseViewModel {
 
   /// 添加 effect，在 dispose 时自动清理
   @protected
-  void addEffect(void Function() effectFn, {void Function()? onDispose}) {
+  void addEffect(void Function() effectFn, {EffectOptions? options}) {
     assert(!_disposed, 'Cannot add effect to disposed ViewModel');
-    _disposables.add(effect(effectFn, onDispose: onDispose));
+    _disposables.add(
+      effect(effectFn, options: options ?? const EffectOptions()),
+    );
   }
 
   /// 异步操作辅助方法

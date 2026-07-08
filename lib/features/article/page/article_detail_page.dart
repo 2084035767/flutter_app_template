@@ -28,7 +28,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Watch.builder(
+    return SignalBuilder(
       builder: (context) {
         final async = _vm.selectedArticle.value;
 
