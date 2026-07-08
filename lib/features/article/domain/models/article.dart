@@ -6,10 +6,12 @@ part 'article.g.dart';
 class Article {
   final int id;
   final String title;
+  final String body;
 
-  Article({required this.id, required this.title});
+  Article({required this.id, required this.title, this.body = ''});
 
-  factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
+  factory Article.fromJson(Map<String, dynamic> json) =>
+      _$ArticleFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArticleToJson(this);
 }
