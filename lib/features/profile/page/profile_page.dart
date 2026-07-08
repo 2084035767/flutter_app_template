@@ -8,9 +8,7 @@ class ProfilePage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
+      appBar: AppBar(title: const Text('个人')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -24,19 +22,16 @@ class ProfilePage extends StatelessWidget {
                     radius: 50,
                     backgroundColor: theme.colorScheme.primary,
                     child: Text(
-                      'JD',
+                      '用',
                       style: theme.textTheme.headlineLarge?.copyWith(
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
+                  Text('用户名', style: theme.textTheme.headlineMedium),
                   Text(
-                    'John Doe',
-                    style: theme.textTheme.headlineMedium,
-                  ),
-                  Text(
-                    'UI/UX Designer',
+                    '个人简介',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
@@ -47,12 +42,12 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 48),
 
             // Settings Section
-            Text('Settings', style: theme.textTheme.titleLarge),
+            Text('设置', style: theme.textTheme.titleLarge),
             const SizedBox(height: 16),
-            _buildSettingItem(context, 'Notifications', Icons.notifications_outlined),
-            _buildSettingItem(context, 'Privacy', Icons.lock_outline),
-            _buildSettingItem(context, 'Appearance', Icons.palette_outlined),
-            _buildSettingItem(context, 'Help & Support', Icons.help_outline),
+            _buildSettingItem(context, '通知', Icons.notifications_outlined),
+            _buildSettingItem(context, '隐私', Icons.lock_outline),
+            _buildSettingItem(context, '外观', Icons.palette_outlined),
+            _buildSettingItem(context, '帮助与支持', Icons.help_outline),
 
             const SizedBox(height: 32),
             SizedBox(
@@ -63,9 +58,11 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   side: BorderSide(color: theme.colorScheme.error),
                   foregroundColor: theme.colorScheme.error,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                child: const Text('Log Out'),
+                child: const Text('退出登录'),
               ),
             ),
           ],
