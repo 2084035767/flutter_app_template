@@ -59,6 +59,7 @@ class AuthViewModel extends BaseViewModel {
   void _initEffects() {
     // 监听用户状态变化
     addEffect(() {
+      if (kReleaseMode) return;
       final state = user.value;
       if (state.hasValue) {
         debugPrint('用户已登录：${state.value?.name}');
@@ -69,9 +70,11 @@ class AuthViewModel extends BaseViewModel {
 
     // 监听表单输入变化
     addEffect(() {
+      if (kReleaseMode) return;
       debugPrint('邮箱输入：${email.value}');
     });
     addEffect(() {
+      if (kReleaseMode) return;
       debugPrint('密码输入：${password.value}');
     });
   }

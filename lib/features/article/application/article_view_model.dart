@@ -64,6 +64,7 @@ class ArticleViewModel extends BaseViewModel {
   void _initEffects() {
     // 监听文章列表状态变化
     addEffect(() {
+      if (kReleaseMode) return;
       final state = articles.value;
       if (state.hasValue) {
         debugPrint('文章列表已加载：${state.value?.length} 篇');
@@ -74,6 +75,7 @@ class ArticleViewModel extends BaseViewModel {
 
     // 监听选中文章状态变化
     addEffect(() {
+      if (kReleaseMode) return;
       final state = selectedArticle.value;
       if (state.hasValue) {
         debugPrint('已选中文章：${state.value?.title}');
