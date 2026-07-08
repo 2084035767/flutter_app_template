@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
-import 'package:injectable/injectable.dart';
 import 'package:my_app/core/config/user_preferences.dart';
 import 'package:my_app/core/error/failure.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 /// 网络模块
-@module
 abstract class NetworkModule {
-  @LazySingleton()
   Dio dio(UserPreferences preferences) {
     final dio = Dio(
       BaseOptions(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:my_app/gen/assets.gen.dart';
+
+import '../../../gen/assets.gen.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key, this.size = 40.0, this.color});

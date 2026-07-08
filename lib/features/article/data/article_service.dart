@@ -1,35 +1,42 @@
-import 'package:injectable/injectable.dart';
-import 'package:my_app/features/article/data/article_api.dart';
+import 'package:dio/dio.dart';
 
+import '../../../core/error/failure.dart';
+import '../../../core/error/result.dart';
 import '../domain/article_repository.dart';
 import '../domain/models/article.dart';
+import 'article_api.dart';
 
-@LazySingleton(as: ArticleRepository)
+/// 文章服务实现
+///
+/// 负责与远程 API 交互，并将底层错误转换为统一的 [Failure] 类型
 class ArticleService implements ArticleRepository {
   final ArticleApi _api;
-  @factoryMethod
+
   ArticleService(this._api);
 
   @override
-  Future<List<Article>> getArticles() async {
+  Future<Result<List<Article>, Failure>> getArticles() async {
     try {
-      final result = await _api.getArticles();
-      return result;
-    } on Exception {
-      rethrow;
+      final articles = await _api.getArticles();
+      return Result.success(articles);
+    } on DioException catch (e) {
+      final apiError = handleError(e);
+      return Result.failure(Failure.fromApiError(apiError));
     } catch (e) {
-      throw Exception(e.toString());
+      return Result.failure(Failure.unknown(e.toString()));
     }
   }
 
   @override
-  Future<Article> getArticle(int id) async {
+  Future<Result<Article, Failure>> getArticle(int id) async {
     try {
-      return await _api.getArticle(id);
-    } on Exception {
-      rethrow;
+      final article = await _api.getArticle(id);
+      return Result.success(article);
+    } on DioException catch (e) {
+      final apiError = handleError(e);
+      return Result.failure(Failure.fromApiError(apiError));
     } catch (e) {
-      throw Exception(e.toString());
+      return Result.failure(Failure.unknown(e.toString()));
     }
   }
 }

@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_app/di/service_locator.dart';
 import 'package:my_app/features/auth/application/auth_view_model.dart';
-import 'package:signals_flutter/signals_flutter.dart';
+import 'package:signals_hooks/signals_hooks.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends HookWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  late final AuthViewModel _vm;
-
-  @override
-  void initState() {
-    super.initState();
-    _vm = getIt<AuthViewModel>();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = _vm;
+    final vm = useMemoized(() => getIt<AuthViewModel>());
+    final AsyncState<dynamic> userState = useSignalValue(vm.user);
+    final bool canSubmit = useSignalValue(vm.canSubmit);
 
     return Scaffold(
       appBar: AppBar(title: const Text('登录')),
@@ -41,35 +31,24 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: '密码'),
             ),
             const SizedBox(height: 24),
-            SignalBuilder(
-              builder: (context) {
-                final async = vm.user.value;
-                if (async.isLoading) {
-                  return const SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                return SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: FilledButton(
-                    onPressed: vm.canSubmit
-                        ? () async {
-                            final result = await vm.login();
-                            result.when(
-                              success: (_) => context.go('/home'),
-                              failure: (error) =>
-                                  _showError(context, error.message),
-                            );
-                          }
-                        : null,
-                    child: const Text('登录'),
-                  ),
-                );
-              },
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: userState.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : FilledButton(
+                      onPressed: canSubmit
+                          ? () async {
+                              final result = await vm.login();
+                              result.when(
+                                success: (_) => context.go('/home'),
+                                failure: (error) =>
+                                    _showError(context, error.message),
+                              );
+                            }
+                          : null,
+                      child: const Text('登录'),
+                    ),
             ),
           ],
         ),
@@ -84,11 +63,5 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Theme.of(context).colorScheme.error,
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _vm.dispose();
-    super.dispose();
   }
 }

@@ -1,72 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
-@Singleton()
+import 'config/network_config.dart';
+import 'config/user_preferences.dart';
+import 'storage/auth_storage.dart';
+import '../features/auth/domain/models/user.dart';
+
+/// 应用配置 - 统一配置入口
+///
+/// 组合使用各个配置模块，提供统一的访问接口
+///
+/// 使用示例：
+/// ```dart
+/// final config = getIt<AppConfig>();
+///
+/// // 访问网络配置
+/// print(config.networkBaseUrl);
+///
+/// // 访问用户偏好
+/// config.setThemeMode(ThemeMode.dark);
+///
+/// // 访问认证存储
+/// final user = config.currentUser.value;
+/// ```
 class AppConfig {
-  final SharedPreferences prefs;
+  // 用户偏好
+  final UserPreferences preferences;
 
-  AppConfig(this.prefs);
+  // 认证存储
+  final AuthStorage auth;
 
-  static String baseUrl = dotenv.env['BASE_URL'] ?? 'https://api.example.com';
-  static const int connectTimeout = 10000;
-  static const int receiveTimeout = 10000;
-  static const int retryDelaysTimeout = 500;
-  static const int retries = 3;
-  static Map<String, String> defaultHeaders = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-  
-  final themeMode = signal<ThemeMode>(ThemeMode.system);
-  final enableDebugLogging = signal<bool>(true);
-  final apiTimeout = signal<int>(30000);
-  final defaultPageSize = signal<int>(20);
-  ThemeMode get currentMode => themeMode.value;
+  // 当前用户（本地信号，同步 auth.currentUser）
+  final currentUser = signal<User?>(null);
 
-  static const String _keyThemeMode = 'app.theme.mode';
-  static const String _keyDebugLogging = 'app.debug.logging';
-  static const String _keyApiTimeout = 'app.api.timeout';
-  static const String _keyDefaultPageSize = 'app.default.page.size';
-
-  @PostConstruct()
-  Future<void> init() async {
-    await dotenv.load();
-    final int themeIndex =
-        prefs.getInt(_keyThemeMode) ?? ThemeMode.system.index;
-    final int resolvedIndex =
-        themeIndex >= 0 && themeIndex < ThemeMode.values.length
-        ? themeIndex
-        : ThemeMode.system.index;
-    themeMode.value = ThemeMode.values[resolvedIndex];
-    enableDebugLogging.value = prefs.getBool(_keyDebugLogging) ?? false;
-    apiTimeout.value = prefs.getInt(_keyApiTimeout) ?? 30;
-    defaultPageSize.value = prefs.getInt(_keyDefaultPageSize) ?? 20;
+  AppConfig(this.preferences, this.auth) {
+    // 同步认证存储的用户信息
+    currentUser.value = auth.currentUser.value;
+    auth.currentUser.addListener(() {
+      currentUser.value = auth.currentUser.value;
+    });
   }
+
+  // ========== 便捷访问属性（网络配置）==========
+
+  /// API 基础 URL
+  String get networkBaseUrl => NetworkConfig.baseUrl;
+
+  /// 连接超时（毫秒）
+  int get networkConnectTimeout => NetworkConfig.connectTimeout;
+
+  /// 接收超时（毫秒）
+  int get networkReceiveTimeout => NetworkConfig.receiveTimeout;
+
+  /// 默认请求头
+  Map<String, String> get networkDefaultHeaders => NetworkConfig.defaultHeaders;
+
+  // ========== 便捷访问属性（用户偏好）==========
+
+  /// 当前主题模式
+  ThemeMode get currentMode => preferences.currentMode;
+
+  /// 是否启用调试日志
+  bool get debugLoggingEnabled => preferences.enableDebugLogging.value;
+
+  /// API 超时时间（秒）
+  int get apiTimeout => preferences.apiTimeout.value;
+
+  /// 默认分页大小
+  int get defaultPageSize => preferences.defaultPageSize.value;
+
+  // ========== 便捷访问属性（认证）==========
+
+  /// 是否已登录
+  bool get isLoggedIn => auth.isLoggedIn;
+
+  /// 当前用户 ID
+  int? get currentUserId => auth.currentUserId;
+
+  // ========== 便捷方法 ==========
 
   /// 设置主题模式
-  void setThemeMode(ThemeMode mode) {
-    themeMode.value = mode;
-    prefs.setInt(_keyThemeMode, mode.index);
-  }
+  void setThemeMode(ThemeMode mode) => preferences.setThemeMode(mode);
 
-  /// 设置调试日志开关
-  void setDebugLogging(bool enabled) {
-    enableDebugLogging.value = enabled;
-    prefs.setBool(_keyDebugLogging, enabled);
-  }
+  /// 设置调试日志
+  void setDebugLogging(bool enabled) => preferences.setDebugLogging(enabled);
 
-  /// 设置API超时时间
-  void setApiTimeout(int timeout) {
-    apiTimeout.value = timeout;
-    prefs.setInt(_keyApiTimeout, timeout);
-  }
+  /// 设置 API 超时
+  void setApiTimeout(int seconds) => preferences.setApiTimeout(seconds);
 
-  /// 设置默认分页大小
-  void setDefaultPageSize(int size) {
-    defaultPageSize.value = size;
-    prefs.setInt(_keyDefaultPageSize, size);
+  /// 设置分页大小
+  void setDefaultPageSize(int size) => preferences.setDefaultPageSize(size);
+
+  /// 登出
+  Future<void> logout() async {
+    await auth.clearAuth();
   }
 }
