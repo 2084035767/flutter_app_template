@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../shared/utils/logging.dart';
+import '../utils/logging.dart';
 
-@LazySingleton()
+@Singleton()
 class FileStorage {
   // 缓存目录，避免重复调用平台通道
   late Future<Directory> _appDir;
@@ -147,7 +147,7 @@ class FileStorage {
 
   /// 获取目录 使用空间（KB）
   Future<int> _getDirSize(Directory dir) async {
-    int total = 0;
+    var total = 0;
     final files = dir.listSync(recursive: true, followLinks: false);
     for (var file in files) {
       if (file is File) {
