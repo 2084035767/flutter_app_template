@@ -30,6 +30,25 @@ This scaffold has several names spread across configuration files. When creating
 
 ---
 
+## Additional Config
+
+### CI Pipeline
+
+A basic CI workflow is at `.github/workflows/ci.yml`:
+
+- Runs `flutter analyze` on every push/PR to master
+- Runs `flutter test` after analyze passes
+
+### Environment Validation
+
+`lib/bootstrap.dart` validates required env keys at startup:
+
+- Keys listed in `_requiredEnvKeys` (currently `BASE_URL`)
+- In debug mode: warning print
+- In release mode: throws `Exception`
+
+---
+
 ## Notes
 
 - The **application ID** (`com.example.flutter_app`) uniquely identifies your app on the device and in stores. Change it before the first release.
