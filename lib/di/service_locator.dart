@@ -5,6 +5,7 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_app/core/app_config.dart';
+import 'package:my_app/core/database/hive_service.dart';
 import 'package:my_app/core/config/user_preferences.dart';
 import 'package:my_app/core/error/failure.dart';
 import 'package:my_app/core/local/file_storage.dart';
@@ -107,7 +108,12 @@ Future<void> configureDependencies() async {
   // 8. AppConfig
   getIt.registerSingleton<AppConfig>(AppConfig(userPrefs, authStorage));
 
-  // 9. ViewModels (factory — new instance per page)
+  // 9. Hive database
+  final hive = HiveService();
+  await hive.init();
+  getIt.registerSingleton<HiveService>(hive);
+
+  // 10. ViewModels (factory — new instance per page)
   getIt.registerFactory<ArticleViewModel>(() => ArticleViewModel());
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel());
 }
