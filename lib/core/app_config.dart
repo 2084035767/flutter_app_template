@@ -5,7 +5,6 @@ import 'package:signals_flutter/signals_flutter.dart';
 import 'config/network_config.dart';
 import 'config/user_preferences.dart';
 import 'storage/auth_storage.dart';
-import '../features/auth/domain/models/user.dart';
 
 /// 应用配置 - 统一配置入口
 ///
@@ -32,16 +31,10 @@ class AppConfig {
   // 认证存储
   final AuthStorage auth;
 
-  // 当前用户（本地信号，同步 auth.currentUser）
-  final currentUser = signal<User?>(null);
+  // 当前用户（通过 computed 自动同步 auth.currentUser）
+  late final currentUser = computed(() => auth.currentUser.value);
 
-  AppConfig(this.preferences, this.auth) {
-    // 同步认证存储的用户信息
-    currentUser.value = auth.currentUser.value;
-    auth.currentUser.addListener(() {
-      currentUser.value = auth.currentUser.value;
-    });
-  }
+  AppConfig(this.preferences, this.auth);
 
   // ========== 便捷访问属性（网络配置）==========
 
