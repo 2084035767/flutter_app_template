@@ -5,7 +5,7 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_app/core/app_config.dart';
-import 'package:my_app/core/database/database_service.dart';
+import 'package:my_app/core/database/app_database.dart';
 import 'package:my_app/core/config/user_preferences.dart';
 import 'package:my_app/core/error/failure.dart';
 import 'package:my_app/core/local/file_storage.dart';
@@ -108,10 +108,9 @@ Future<void> configureDependencies() async {
   // 8. AppConfig
   getIt.registerSingleton<AppConfig>(AppConfig(userPrefs, authStorage));
 
-  // 9. Database (SQLite via sqlite3)
-  final db = DatabaseService();
-  await db.init();
-  getIt.registerSingleton<DatabaseService>(db);
+  // 9. Database (Drift)
+  final db = AppDatabase();
+  getIt.registerSingleton<AppDatabase>(db);
 
   // 10. ViewModels (factory — new instance per page)
   getIt.registerFactory<ArticleViewModel>(() => ArticleViewModel());
