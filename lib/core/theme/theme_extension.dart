@@ -47,12 +47,17 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   AppThemeExtension lerp(AppThemeExtension? other, double t) {
     if (other == null) return this;
     return AppThemeExtension(
-      primaryContainer:
-          Color.lerp(primaryContainer, other.primaryContainer, t)!,
-      secondaryContainer:
-          Color.lerp(secondaryContainer, other.secondaryContainer, t)!,
-      surfaceVariant:
-          Color.lerp(surfaceVariant, other.surfaceVariant, t)!,
+      primaryContainer: Color.lerp(
+        primaryContainer,
+        other.primaryContainer,
+        t,
+      )!,
+      secondaryContainer: Color.lerp(
+        secondaryContainer,
+        other.secondaryContainer,
+        t,
+      )!,
+      surfaceVariant: Color.lerp(surfaceVariant, other.surfaceVariant, t)!,
       shadow: BoxShadow.lerp(shadow, other.shadow, t)!,
     );
   }

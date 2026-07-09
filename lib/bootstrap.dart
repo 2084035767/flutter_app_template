@@ -15,7 +15,6 @@ Future<void> bootstrap() async {
   // Load .env file and validate required keys
   await dotenv.load(fileName: '.env');
   _validateEnv();
-
   await configureDependencies();
   runApp(const MyApp());
 }
