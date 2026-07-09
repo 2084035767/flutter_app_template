@@ -11,8 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   # --- Routing ---
-  go_router: ^17.0.1
-
   # --- State Management ---
   signals_flutter: ^7.1.0
   signals_hooks: ^7.1.0
@@ -50,6 +48,8 @@ dependencies:
   flutter_dotenv: ^6.0.0
   json_annotation: 4.12.0
   freezed_annotation: ^3.1.0
+  auto_route: ^11.1.0
+  auto_route_generator: ^10.6.0
 
 dev_dependencies:
   flutter_test:

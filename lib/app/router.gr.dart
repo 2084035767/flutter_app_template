@@ -1,0 +1,201 @@
+// dart format width=80
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// **************************************************************************
+// AutoRouterGenerator
+// **************************************************************************
+
+// ignore_for_file: type=lint
+// coverage:ignore-file
+
+part of 'router.dart';
+
+/// generated route for
+/// [ArticleDetailPage]
+class ArticleDetailRoute extends PageRouteInfo<ArticleDetailRouteArgs> {
+  ArticleDetailRoute({
+    Key? key,
+    required int articleId,
+    List<PageRouteInfo>? children,
+  }) : super(
+         ArticleDetailRoute.name,
+         args: ArticleDetailRouteArgs(key: key, articleId: articleId),
+         initialChildren: children,
+       );
+
+  static const String name = 'ArticleDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ArticleDetailRouteArgs>();
+      return ArticleDetailPage(key: args.key, articleId: args.articleId);
+    },
+  );
+}
+
+class ArticleDetailRouteArgs {
+  const ArticleDetailRouteArgs({this.key, required this.articleId});
+
+  final Key? key;
+
+  final int articleId;
+
+  @override
+  String toString() {
+    return 'ArticleDetailRouteArgs{key: $key, articleId: $articleId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ArticleDetailRouteArgs) return false;
+    return key == other.key && articleId == other.articleId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ articleId.hashCode;
+}
+
+/// generated route for
+/// [ArticleListPage]
+class ArticleListRoute extends PageRouteInfo<void> {
+  const ArticleListRoute({List<PageRouteInfo>? children})
+    : super(ArticleListRoute.name, initialChildren: children);
+
+  static const String name = 'ArticleListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ArticleListPage();
+    },
+  );
+}
+
+/// generated route for
+/// [HomePage]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+    : super(HomeRoute.name, initialChildren: children);
+
+  static const String name = 'HomeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HomePage();
+    },
+  );
+}
+
+/// generated route for
+/// [LoginPage]
+class LoginRoute extends PageRouteInfo<void> {
+  const LoginRoute({List<PageRouteInfo>? children})
+    : super(LoginRoute.name, initialChildren: children);
+
+  static const String name = 'LoginRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LoginPage();
+    },
+  );
+}
+
+/// generated route for
+/// [MainPage]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+    : super(MainRoute.name, initialChildren: children);
+
+  static const String name = 'MainRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MainPage();
+    },
+  );
+}
+
+/// generated route for
+/// [NotFoundPage]
+class NotFoundRoute extends PageRouteInfo<void> {
+  const NotFoundRoute({List<PageRouteInfo>? children})
+    : super(NotFoundRoute.name, initialChildren: children);
+
+  static const String name = 'NotFoundRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const NotFoundPage();
+    },
+  );
+}
+
+/// generated route for
+/// [ProfilePage]
+class ProfileRoute extends PageRouteInfo<void> {
+  const ProfileRoute({List<PageRouteInfo>? children})
+    : super(ProfileRoute.name, initialChildren: children);
+
+  static const String name = 'ProfileRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProfilePage();
+    },
+  );
+}
+
+/// generated route for
+/// [SplashPage]
+class SplashRoute extends PageRouteInfo<SplashRouteArgs> {
+  SplashRoute({
+    Key? key,
+    required bool isAuthenticated,
+    List<PageRouteInfo>? children,
+  }) : super(
+         SplashRoute.name,
+         args: SplashRouteArgs(key: key, isAuthenticated: isAuthenticated),
+         initialChildren: children,
+       );
+
+  static const String name = 'SplashRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<SplashRouteArgs>();
+      return SplashPage(key: args.key, isAuthenticated: args.isAuthenticated);
+    },
+  );
+}
+
+class SplashRouteArgs {
+  const SplashRouteArgs({this.key, required this.isAuthenticated});
+
+  final Key? key;
+
+  final bool isAuthenticated;
+
+  @override
+  String toString() {
+    return 'SplashRouteArgs{key: $key, isAuthenticated: $isAuthenticated}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SplashRouteArgs) return false;
+    return key == other.key && isAuthenticated == other.isAuthenticated;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isAuthenticated.hashCode;
+}

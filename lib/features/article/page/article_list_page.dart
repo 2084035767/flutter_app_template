@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+import 'package:my_app/app/router.dart';
 import 'package:my_app/core/presentation/widgets/empty_widget.dart';
 import 'package:my_app/core/presentation/widgets/error_text.dart';
 import 'package:my_app/core/presentation/widgets/loading_indicator.dart';
@@ -9,6 +10,7 @@ import 'package:my_app/features/article/application/article_view_model.dart';
 import 'package:my_app/features/article/domain/models/article.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 
+@RoutePage()
 class ArticleListPage extends HookWidget {
   const ArticleListPage({super.key});
 
@@ -42,7 +44,9 @@ class ArticleListPage extends HookWidget {
               child: Card(
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
-                  onTap: () => context.push('/articles/${article.id}'),
+                  onTap: () => context.pushRoute(
+                    ArticleDetailRoute(articleId: article.id),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(

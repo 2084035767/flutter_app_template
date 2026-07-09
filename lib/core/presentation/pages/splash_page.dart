@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:my_app/app/router.dart';
 
 /// 启动页
 ///
 /// 检查认证状态后自动跳转到对应页面。
-/// 如果已登录跳转到首页，否则跳转到登录页。
+@RoutePage()
 class SplashPage extends StatefulWidget {
   final bool isAuthenticated;
 
@@ -22,14 +23,13 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _redirect() async {
-    // 短暂延迟展示启动画面
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
 
     if (widget.isAuthenticated) {
-      context.go('/home');
+      context.replaceRoute(const HomeRoute());
     } else {
-      context.go('/login');
+      context.replaceRoute(const LoginRoute());
     }
   }
 

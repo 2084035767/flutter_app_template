@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:my_app/app/router.dart';
 
 /// 404 页面
+@RoutePage()
 class NotFoundPage extends StatelessWidget {
   const NotFoundPage({super.key});
 
@@ -38,7 +40,7 @@ class NotFoundPage extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               FilledButton.tonalIcon(
-                onPressed: () => context.go('/home'),
+                onPressed: () => context.replaceRoute(const HomeRoute()),
                 icon: const Icon(Icons.home_rounded),
                 label: const Text('返回首页'),
               ),
