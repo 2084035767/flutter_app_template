@@ -19,7 +19,7 @@ dependencies:
   # --- Dependency Injection ---
   get_it: ^9.2.0
   # --- Network & API ---
-  dio: ^5.9.0
+  dio: ^5.10.0
   dio_smart_retry: ^7.0.1
   pretty_dio_logger: ^1.4.0
   retrofit: ^4.9.2
@@ -89,6 +89,7 @@ flutter:
     - .env
     - assets/json/lottie-404.json
     - assets/json/lottie-cta.json
+    - mock/
 
   # --- Fonts Configuration (Uncomment to use) ---
   # fonts:

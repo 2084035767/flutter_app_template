@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:my_app/core/config/network_config.dart';
 import 'package:my_app/core/config/user_preferences.dart';
 import 'package:my_app/core/error/failure.dart';
+import 'package:my_app/core/network/mock_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 @module
@@ -46,6 +48,9 @@ abstract class NetworkModule {
     );
 
     dio.interceptors.add(RetryInterceptor(dio: dio, retries: 3));
+
+    // Mock 拦截器（在最前面，优先拦截）
+    dio.interceptors.add(MockInterceptor(isMock: NetworkConfig.isMock));
 
     if (kDebugMode) {
       dio.interceptors.add(

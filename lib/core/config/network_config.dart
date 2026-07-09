@@ -29,7 +29,11 @@ class NetworkConfig {
 
   /// 默认请求头
   static Map<String, String> get defaultHeaders => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+
+  /// 本地 Mock 开关
+  /// true = 不发起真实 HTTP 请求，从 /mock/ 读取 JSON 返回
+  static bool isMock = true;
 }
