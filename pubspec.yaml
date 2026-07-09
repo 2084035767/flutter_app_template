@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.20.3
   shimmer: ^3.0.0
   injectable: 3.0.0
+  msw_dio_interceptor: ^1.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -68,6 +69,7 @@ dev_dependencies:
   freezed: ^4.0.0-dev.3
   drift_dev: 2.34.2+1
   injectable_generator: 3.1.0
+  mocktail: ^1.0.5
 
 # --- Flutter Launcher Icons Plugin ---
 flutter_launcher_icons:
@@ -89,7 +91,6 @@ flutter:
     - .env
     - assets/json/lottie-404.json
     - assets/json/lottie-cta.json
-    - mock/
 
   # --- Fonts Configuration (Uncomment to use) ---
   # fonts:
