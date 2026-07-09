@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_app/app.dart';
+import 'package:my_app/core/utils/logging.dart';
 
 import 'di/service_locator.dart';
 
@@ -25,7 +26,7 @@ void _validateEnv() {
       if (kReleaseMode) {
         throw Exception('Missing required env key: $key');
       } else {
-        debugPrint('⚠️ Missing env key: $key — using defaults');
+        Logging.warning('⚠️ Missing env key: $key — using defaults');
       }
     }
   }
