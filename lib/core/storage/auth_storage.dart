@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
@@ -6,6 +7,7 @@ import '../../features/auth/domain/models/user.dart';
 /// 认证存储
 ///
 /// 负责管理认证相关的本地存储，包括用户信息和 token
+@Singleton()
 class AuthStorage {
   late final SharedPreferences _prefs;
 

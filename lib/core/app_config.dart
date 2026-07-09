@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 import 'config/network_config.dart';
@@ -23,6 +24,7 @@ import '../features/auth/domain/models/user.dart';
 /// // 访问认证存储
 /// final user = config.currentUser.value;
 /// ```
+@Singleton()
 class AppConfig {
   // 用户偏好
   final UserPreferences preferences;

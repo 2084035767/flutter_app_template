@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../utils/logging.dart';
 
+@Singleton()
 class FileStorage {
   // 缓存目录，避免重复调用平台通道
   late Future<Directory> _appDir;

@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:my_app/core/error/failure.dart';
 import 'package:my_app/core/error/result.dart';
 import 'package:my_app/di/service_locator.dart';
@@ -8,6 +9,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 /// 认证 ViewModel
 ///
 /// 信号私有、Readonly 暴露，UI 通过 hooks 订阅。
+@injectable
 class AuthViewModel {
   final AuthRepository _repo = getIt<AuthRepository>();
 

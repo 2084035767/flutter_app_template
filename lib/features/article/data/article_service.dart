@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
@@ -9,6 +10,7 @@ import 'article_api.dart';
 /// 文章服务实现
 ///
 /// 负责与远程 API 交互，并将底层错误转换为统一的 [Failure] 类型
+@LazySingleton(as: ArticleRepository)
 class ArticleService implements ArticleRepository {
   final ArticleApi _api;
 

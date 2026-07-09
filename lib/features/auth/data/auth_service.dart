@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
@@ -10,6 +11,7 @@ import 'auth_api.dart';
 /// 认证服务实现
 ///
 /// 负责与远程 API 交互，并将底层错误转换为统一的 [Failure] 类型
+@LazySingleton(as: AuthRepository)
 class AuthService implements AuthRepository {
   final AuthApi _api;
   final AuthStorage _storage;

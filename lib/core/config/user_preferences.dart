@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 /// 用户偏好配置
 ///
 /// 负责管理用户相关的配置和偏好设置，使用响应式信号实现状态更新
+@Singleton()
 class UserPreferences {
   late final SharedPreferences _prefs;
 
@@ -37,12 +39,11 @@ class UserPreferences {
   /// 从本地存储加载用户偏好
   void _loadFromStorage() {
     // 加载主题模式
-    final themeIndex =
-        _prefs.getInt(_keyThemeMode) ?? ThemeMode.system.index;
+    final themeIndex = _prefs.getInt(_keyThemeMode) ?? ThemeMode.system.index;
     final resolvedIndex =
         themeIndex >= 0 && themeIndex < ThemeMode.values.length
-            ? themeIndex
-            : ThemeMode.system.index;
+        ? themeIndex
+        : ThemeMode.system.index;
     themeMode.value = ThemeMode.values[resolvedIndex];
 
     // 加载其他偏好

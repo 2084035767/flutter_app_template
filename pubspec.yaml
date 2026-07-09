@@ -51,6 +51,7 @@ dependencies:
   flex_color_scheme: ^8.4.0
   intl: ^0.20.3
   shimmer: ^3.0.0
+  injectable: 3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -66,6 +67,7 @@ dev_dependencies:
   signals_lint: 7.1.0
   freezed: ^4.0.0-dev.3
   drift_dev: 2.34.2+1
+  injectable_generator: 3.1.0
 
 # --- Flutter Launcher Icons Plugin ---
 flutter_launcher_icons:

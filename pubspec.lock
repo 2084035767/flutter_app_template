@@ -552,6 +552,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.1"
+  injectable:
+    dependency: "direct main"
+    description:
+      name: injectable
+      sha256: "1da6399509e44ddb0d8a4a35291d7122c4efb5c625a9d733bf5e48d4a72e379e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
+  injectable_generator:
+    dependency: "direct dev"
+    description:
+      name: injectable_generator
+      sha256: f4489d28a0147d47fd9f16955fa62f84aab88a63e3b89418e6e2467c8e783e9a
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0"
   intl:
     dependency: "direct main"
     description:

@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:my_app/core/error/failure.dart';
 import 'package:my_app/core/error/result.dart';
 import 'package:my_app/di/service_locator.dart';
@@ -8,6 +9,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 /// 文章 ViewModel
 ///
 /// 信号私有、Readonly 暴露，UI 通过 hooks 订阅。
+@injectable
 class ArticleViewModel {
   final ArticleRepository _repo = getIt<ArticleRepository>();
 

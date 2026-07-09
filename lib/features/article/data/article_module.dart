@@ -1,10 +1,10 @@
-// lib/features/article/data/article_module.dart
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import 'article_api.dart';
 
-/// 文章功能模块 - 提供文章相关依赖
+@module
 abstract class ArticleModule {
-  /// Article API 服务
+  @LazySingleton()
   ArticleApi articleApi(Dio dio) => ArticleApi(dio);
 }
