@@ -1,7 +1,8 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/app/router.dart';
 import 'package:my_app/core/app_config.dart';
-import 'package:my_app/core/theme/app_theme.dart';
+import 'package:my_app/core/theme/theme_extension.dart';
 import 'package:my_app/di/service_locator.dart';
 
 class MyApp extends StatelessWidget {
@@ -15,8 +16,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
+      theme: FlexThemeData.light(
+        scheme: FlexScheme.indigo,
+        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+        appBarStyle: FlexAppBarStyle.background,
+        extensions: [const AppThemeExtension()],
+      ),
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.indigo,
+        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+        appBarStyle: FlexAppBarStyle.background,
+        extensions: [const AppThemeExtension()],
+      ),
       themeMode: config.currentMode,
     );
   }
