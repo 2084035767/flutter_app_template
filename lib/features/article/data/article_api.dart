@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:my_app/features/article/domain/models/article.dart';
+import 'package:my_app/features/article/data/models/article.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'article_api.g.dart';

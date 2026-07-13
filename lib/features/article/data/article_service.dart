@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/error/failure.dart';
-import '../../../core/error/result.dart';
-import '../domain/article_repository.dart';
-import '../domain/models/article.dart';
+import '../../../core/base/failure.dart';
+import '../../../core/base/result.dart';
+import 'article_repository.dart';
+import 'models/article.dart';
 import 'article_api.dart';
 
 /// 文章服务实现

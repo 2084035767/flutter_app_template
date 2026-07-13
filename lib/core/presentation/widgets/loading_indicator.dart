@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../../gen/assets.gen.dart';
 
@@ -15,7 +14,7 @@ class LoadingIndicator extends StatelessWidget {
       child: SizedBox(
         width: size,
         height: size,
-        child: Center(child: Lottie.asset(Assets.json.lottieCta)),
+        child: Center(child: Assets.json.lottieCta.lottie()),
       ),
     );
   }

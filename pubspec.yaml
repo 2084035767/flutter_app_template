@@ -110,10 +110,22 @@ flutter_launcher_icons:
 flutter_gen:
   output: lib/gen/
   line_length: 80
+  integrations:
+    flutter_svg: true
+    lottie: true
+
+  assets:
+    exclude:
+      - .env*
+      - .env
+      - .env.development
+      - .env.production
 
 flutter:
   uses-material-design: true
   assets:
     - .env
+    - .env.development
+    - .env.production
     - assets/json/lottie-404.json
     - assets/json/lottie-cta.json

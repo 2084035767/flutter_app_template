@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:my_app/features/auth/domain/models/user.dart';
+import 'package:my_app/features/auth/data/models/user.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'auth_api.g.dart';

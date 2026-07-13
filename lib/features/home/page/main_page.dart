@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:my_app/app/router.dart';
+import 'package:my_app/core/routing/router.dart';
 
 /// 主框架页面
 ///

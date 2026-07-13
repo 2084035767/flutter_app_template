@@ -12,24 +12,23 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:my_app/core/app_config.dart' as _i122;
+import 'package:my_app/core/config/app_config.dart' as _i149;
 import 'package:my_app/core/config/user_preferences.dart' as _i257;
 import 'package:my_app/core/core_module.dart' as _i316;
-import 'package:my_app/core/local/file_storage.dart' as _i415;
-import 'package:my_app/core/network/dio_client.dart' as _i488;
-import 'package:my_app/core/storage/auth_storage.dart' as _i490;
-import 'package:my_app/features/article/application/article_view_model.dart'
-    as _i725;
+import 'package:my_app/core/data/database/app_database.dart' as _i157;
+import 'package:my_app/core/data/network/dio_client.dart' as _i426;
+import 'package:my_app/core/data/storage/auth_storage.dart' as _i70;
+import 'package:my_app/core/data/storage/file_storage.dart' as _i477;
 import 'package:my_app/features/article/data/article_api.dart' as _i582;
 import 'package:my_app/features/article/data/article_module.dart' as _i481;
+import 'package:my_app/features/article/data/article_repository.dart' as _i144;
 import 'package:my_app/features/article/data/article_service.dart' as _i86;
-import 'package:my_app/features/article/domain/article_repository.dart'
-    as _i838;
-import 'package:my_app/features/auth/application/auth_view_model.dart' as _i484;
+import 'package:my_app/features/article/logic/article_view_model.dart' as _i913;
 import 'package:my_app/features/auth/data/auth_api.dart' as _i738;
-import 'package:my_app/features/auth/data/auth_module.dart' as _i144;
+import 'package:my_app/features/auth/data/auth_module.dart' as _i145;
+import 'package:my_app/features/auth/data/auth_repository.dart' as _i409;
 import 'package:my_app/features/auth/data/auth_service.dart' as _i514;
-import 'package:my_app/features/auth/domain/auth_repository.dart' as _i478;
+import 'package:my_app/features/auth/logic/auth_view_model.dart' as _i572;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -47,25 +46,37 @@ extension GetItInjectableX on _i174.GetIt {
       () => coreModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i725.ArticleViewModel>(() => _i725.ArticleViewModel());
-    gh.factory<_i484.AuthViewModel>(() => _i484.AuthViewModel());
     gh.singleton<_i257.UserPreferences>(() => _i257.UserPreferences());
-    gh.singleton<_i415.FileStorage>(() => _i415.FileStorage());
-    gh.singleton<_i490.AuthStorage>(() => _i490.AuthStorage());
-    gh.factory<_i361.Dio>(() => networkModule.dio(gh<_i257.UserPreferences>()));
-    gh.singleton<_i122.AppConfig>(
+    gh.singleton<_i157.AppDatabase>(() => coreModule.database);
+    gh.singleton<_i477.FileStorage>(() => _i477.FileStorage());
+    gh.singleton<_i70.AuthStorage>(
+      () => _i70.AuthStorage(gh<_i460.SharedPreferences>()),
+    );
+    gh.factory<_i361.Dio>(
+      () => networkModule.dio(
+        gh<_i257.UserPreferences>(),
+        gh<_i70.AuthStorage>(),
+      ),
+    );
+    gh.singleton<_i149.AppConfig>(
       () =>
-          _i122.AppConfig(gh<_i257.UserPreferences>(), gh<_i490.AuthStorage>()),
+          _i149.AppConfig(gh<_i257.UserPreferences>(), gh<_i70.AuthStorage>()),
     );
     gh.lazySingleton<_i582.ArticleApi>(
       () => articleModule.articleApi(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i738.AuthApi>(() => authModule.authApi(gh<_i361.Dio>()));
-    gh.lazySingleton<_i838.ArticleRepository>(
+    gh.lazySingleton<_i144.ArticleRepository>(
       () => _i86.ArticleService(gh<_i582.ArticleApi>()),
     );
-    gh.lazySingleton<_i478.AuthRepository>(
-      () => _i514.AuthService(gh<_i738.AuthApi>(), gh<_i490.AuthStorage>()),
+    gh.factory<_i913.ArticleViewModel>(
+      () => _i913.ArticleViewModel(gh<_i144.ArticleRepository>()),
+    );
+    gh.lazySingleton<_i409.AuthRepository>(
+      () => _i514.AuthService(gh<_i738.AuthApi>(), gh<_i70.AuthStorage>()),
+    );
+    gh.factory<_i572.AuthViewModel>(
+      () => _i572.AuthViewModel(gh<_i409.AuthRepository>()),
     );
     return this;
   }
@@ -73,8 +84,8 @@ extension GetItInjectableX on _i174.GetIt {
 
 class _$CoreModule extends _i316.CoreModule {}
 
-class _$NetworkModule extends _i488.NetworkModule {}
+class _$NetworkModule extends _i426.NetworkModule {}
 
 class _$ArticleModule extends _i481.ArticleModule {}
 
-class _$AuthModule extends _i144.AuthModule {}
+class _$AuthModule extends _i145.AuthModule {}

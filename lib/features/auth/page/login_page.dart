@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:my_app/app/router.dart';
+import 'package:my_app/core/base/run_async.dart';
+import 'package:my_app/core/routing/router.dart';
 import 'package:my_app/di/service_locator.dart';
-import 'package:my_app/features/auth/application/auth_view_model.dart';
+import 'package:my_app/features/auth/logic/auth_view_model.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 
 @RoutePage()
@@ -35,19 +36,24 @@ class LoginPage extends HookWidget {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 56,
               child: userState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : FilledButton(
                       onPressed: canSubmit
-                          ? () async {
-                              final result = await vm.login();
-                              result.when(
-                                success: (_) =>
-                                    context.replaceRoute(const HomeRoute()),
-                                failure: (error) =>
-                                    _showError(context, error.message),
-                              );
+                          ? () {
+                              // 使用未命名闭包包裹 async 以防止按钮回调中的未捕获异常
+                              Future.microtask(() async {
+                                final result = await vm.login();
+                                result.when(
+                                  success: (_) =>
+                                      context.replaceRoute(const HomeRoute()),
+                                  failure: (error) => _showError(
+                                    context,
+                                    userErrorMessage(error),
+                                  ),
+                                );
+                              });
                             }
                           : null,
                       child: const Text('登录'),

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:my_app/core/error/result.dart';
-import 'package:my_app/features/auth/application/auth_view_model.dart';
-import 'package:my_app/features/auth/domain/auth_repository.dart';
-import 'package:my_app/features/auth/domain/models/user.dart';
+import 'package:my_app/core/base/result.dart';
+import 'package:my_app/features/auth/data/auth_repository.dart';
+import 'package:my_app/features/auth/data/models/user.dart';
+import 'package:my_app/features/auth/logic/auth_view_model.dart';
 import 'package:my_app/features/auth/page/login_page.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -15,7 +15,6 @@ void main() {
 
   setUp(() {
     mockRepo = MockAuthRepository();
-    GetIt.I.registerSingleton<AuthRepository>(mockRepo);
 
     when(
       () => mockRepo.getCurrentUser(),
@@ -27,7 +26,7 @@ void main() {
       () => mockRepo.login(any(), any()),
     ).thenAnswer((_) async => Result.success(User(id: 1, name: '测试用户')));
 
-    GetIt.I.registerFactory<AuthViewModel>(() => AuthViewModel());
+    GetIt.I.registerFactory<AuthViewModel>(() => AuthViewModel(mockRepo));
   });
 
   tearDown(() {

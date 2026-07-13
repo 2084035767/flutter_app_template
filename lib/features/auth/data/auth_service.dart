@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/error/failure.dart';
-import '../../../core/error/result.dart';
-import '../../../core/storage/auth_storage.dart';
-import '../domain/auth_repository.dart';
-import '../domain/models/user.dart';
+import '../../../core/base/failure.dart';
+import '../../../core/base/result.dart';
+import '../../../core/data/storage/auth_storage.dart';
+import 'auth_repository.dart';
+import 'models/user.dart';
 import 'auth_api.dart';
 
 /// 认证服务实现
