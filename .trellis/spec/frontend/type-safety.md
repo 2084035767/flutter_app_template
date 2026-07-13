@@ -20,15 +20,16 @@ This project is written in **Dart 3+** with full **null safety** enabled. Type s
 
 ## Type Organization
 
-### Models (per feature, in `domain/models/`)
+### Models (per feature, in `data/models/`)
 
 ```dart
 @JsonSerializable()
 class Article {
   final int id;
   final String title;
+  final String body;
 
-  Article({required this.id, required this.title});
+  Article({required this.id, required this.title, required this.body});
 
   factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
   Map<String, dynamic> toJson() => _$ArticleToJson(this);
@@ -41,9 +42,9 @@ class Article {
 - All fields are `final` and non-nullable (unless explicitly nullable)
 - Constructors use `required` named parameters
 - `@JsonSerializable()` is the standard annotation
-- `User.fromJsonString()` helper for string-serialized models
+- For complex models (copyWith, equality), use `@freezed`
 
-### Global types (`core/error/`)
+### Global types (`core/base/`)
 
 ```dart
 sealed class Result<T, E> { ... }  // Generic result type
@@ -53,6 +54,8 @@ sealed class Failure { ... }        // Error hierarchy
 ### Generated types
 
 - `*.g.dart` — JSON serialization, injectable, retrofit code generation
+- `*.freezed.dart` — Freezed-generated copyWith / == / hashCode
+- `*.config.dart` — injectable service locator
 - `lib/gen/assets.gen.dart` — Asset references (flutter_gen)
 - Never edit generated files manually
 
@@ -83,7 +86,7 @@ Future<User> login(@Query('email') String email, @Query('pwd') String pwd);
 
 ```dart
 result.when(
-  success: (user) => context.go('/home'),
+  success: (user) => context.router.replace(const HomeRoute()),
   failure: (error) => _showError(context, error.message),
 );
 ```
@@ -91,8 +94,8 @@ result.when(
 ### Signal state checking
 
 ```dart
-final async = _vm.articles.value;
-if (async.isLoading) return LoadingIndicator();
+final async = useSignalValue(vm.articles);
+if (async.isLoading) return const LoadingIndicator();
 if (async.hasError) return ErrorText(error: async.error!);
 final data = async.value!; // Safe after checking loading + error
 ```
@@ -111,6 +114,6 @@ final data = async.value!; // Safe after checking loading + error
 - ❌ **`dynamic` type** — Use typed generics or `Object?` instead
 - ❌ **`as` casts without null checks** — Use pattern matching or `is` checks
 - ❌ **Raw `Map<String, dynamic>` as API response** — Always deserialize into typed models
-- ❌ **`print()` for debugging** — Use `debugPrint()` or `Logging.debug()`
+- ❌ **`print()` for debugging** — Use `Logging.debug()` or `Logging.error()`
 - ❌ **Manually written `fromJson`/`toJson`** — Use `@JsonSerializable()` code generation
 - ❌ **`!` null assertions without prior null check** — Use pattern matching or early returns

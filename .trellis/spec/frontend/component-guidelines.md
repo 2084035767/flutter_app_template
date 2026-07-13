@@ -18,43 +18,41 @@ This is a **Flutter project using Material Design 3** (Material You). Widgets fo
 
 ---
 
-## Component Structure
+## Page Structure
 
-### Standard page template
+### 标准页面（带 ViewModel）
 
 ```dart
-class ArticleListPage extends StatefulWidget {
+@RoutePage()
+class ArticleListPage extends HookWidget {
   const ArticleListPage({super.key});
 
   @override
-  State<ArticleListPage> createState() => _ArticleListPageState();
-}
-
-class _ArticleListPageState extends State<ArticleListPage> {
-  late final ArticleViewModel _vm;
-
-  @override
-  void initState() {
-    super.initState();
-    _vm = getIt<ArticleViewModel>();
-    _vm.load();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // ... Watch.builder for reactive updates
-  }
+    final vm = useMemoized(() => getIt<ArticleViewModel>());
+    final async = useSignalValue(vm.articles);
 
-  @override
-  void dispose() {
-    _vm.dispose();
-    super.dispose();
+    useEffect(() {
+      vm.loadArticles();
+      return null;
+    }, []);
+
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('文章列表')),
+      body: Switch(
+        async,
+        loading: () => const LoadingIndicator(),
+        error: (e) => ErrorText(error: e, onRetry: vm.loadArticles),
+        data: (items) => ListView.builder(/* ... */),
+      ),
+    );
   }
 }
 ```
 
-### Stateless page template (when no mutable state needed)
+### 无状态页面（无需 ViewModel）
 
 ```dart
 class ArticleDetailPage extends StatelessWidget {
@@ -112,11 +110,11 @@ Text(
 Text(article.title, style: TextStyle(fontSize: 18, color: Colors.black)),
 ```
 
-**Design tokens** are defined in `lib/core/theme/theme_constants.dart` as `DesignTokens`:
+**Theme extensions** are defined in `lib/core/config/theme_extension.dart`:
 
-- Use `DesignTokens.primary`, `DesignTokens.surface`, etc. for theme-level references
-- Use `DesignTokens.radius(RadiusSize.sm)`, `DesignTokens.spacing(Spacing.md)` for consistent values
-- `AppThemeExtension` for custom theme properties not covered by `ColorScheme`
+- Use `FlexThemeData.light/dark` for full MD3 theme building
+- Use `AppThemeExtension` for custom theme properties not covered by `ColorScheme`
+- Never reference hardcoded color values
 
 ---
 
@@ -129,6 +127,28 @@ Three core shared widgets in `lib/core/presentation/widgets/`:
 | `LoadingIndicator` | Full-screen loading | `size`, `color` (uses Lottie animation) |
 | `ErrorText` | Error with retry | `error`, `onRetry?`, `icon?` |
 | `EmptyWidget` | Empty state placeholder | `message`, `icon?`, `actionLabel?`, `onAction?` |
+
+---
+
+## Three-State Rendering
+
+所有异步页面遵循统一的三态渲染模式：
+
+```dart
+// 使用 Switch 组件（推荐
+Switch(
+  async,
+  loading: () => const LoadingIndicator(),
+  error: (e) => ErrorText(error: e, onRetry: retry),
+  data: (items) => ListView.builder(...),
+)
+
+// 或手动分支
+if (async.isLoading) return const LoadingIndicator();
+if (async.hasError) return ErrorText(error: ..., onRetry: ...);
+if (async.value!.isEmpty) return const EmptyWidget(message: '暂无数据');
+return ListView.builder(...);
+```
 
 ---
 
@@ -147,5 +167,5 @@ Three core shared widgets in `lib/core/presentation/widgets/`:
 - ❌ **Not using `const` constructors** — The linter enforces `prefer_const_constructors`
 - ❌ **Missing `super.key`** — Always include `super.key` in widget constructors
 - ❌ **Business logic in widgets** — Delegate to ViewModel for all state mutations
-- ❌ **Not checking `mounted` after async operations** — Always guard `if (!mounted) return;`
-- ❌ **Forgetting to dispose ViewModels** — Call `_vm.dispose()` in `State.dispose()`
+- ❌ **Creating ViewModel in `build()` without `useMemoized`** — Creates new instance per rebuild
+- ❌ **Using `Watch.builder` / `Watch()`** — These are deprecated; use `SignalBuilder` or `useSignalValue`

@@ -94,8 +94,6 @@ runZonedGuarded         → 未捕获的 zone 异常（兜底）
 
 ---
 
----
-
 ## Custom Lint Rules (`my_app_lint`)
 
 该项目有两条自定义 lint 规则，通过 `analysis_server_plugin` 加载。
@@ -136,8 +134,6 @@ import 'package:my_app/features/auth/logic/auth_view_model.dart';
 import 'package:my_app/features/auth/data/models/user.dart';
 import 'package:my_app/core/routing/app_router.dart';
 ```
-
----
 
 ---
 
