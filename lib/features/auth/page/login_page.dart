@@ -2,64 +2,176 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_app/core/base/run_async.dart';
+import 'package:my_app/core/config/theme_extension.dart';
 import 'package:my_app/core/routing/router.dart';
 import 'package:my_app/di/service_locator.dart';
 import 'package:my_app/features/auth/logic/auth_view_model.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 
+/// 登录页——温暖极简的登录体验
 @RoutePage()
 class LoginPage extends HookWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final appTheme = AppThemeExtension.of(context);
+
     final vm = useMemoized(() => getIt<AuthViewModel>());
     final AsyncState<dynamic> userState = useSignalValue(vm.user);
     final bool canSubmit = useSignalValue(vm.canSubmit);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('登录')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: (v) => vm.updateEmail(v),
-              decoration: const InputDecoration(labelText: '邮箱'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              onChanged: (v) => vm.updatePassword(v),
-              obscureText: true,
-              decoration: const InputDecoration(labelText: '密码'),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: userState.isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : FilledButton(
-                      onPressed: canSubmit
-                          ? () {
-                              // 使用未命名闭包包裹 async 以防止按钮回调中的未捕获异常
-                              Future.microtask(() async {
-                                final result = await vm.login();
-                                result.when(
-                                  success: (_) =>
-                                      context.replaceRoute(const HomeRoute()),
-                                  failure: (error) => _showError(
-                                    context,
-                                    userErrorMessage(error),
-                                  ),
-                                );
-                              });
-                            }
-                          : null,
-                      child: const Text('登录'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colorScheme.surface,
+              colorScheme.surfaceContainerLow,
+              colorScheme.surface,
+            ],
+            stops: const [0.0, 0.4, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // ── Brand mark ──
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(appTheme.radiusLg),
                     ),
+                    child: Icon(
+                      Icons.spa_outlined,
+                      size: 36,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  Text(
+                    '欢迎回来',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '登录以继续使用',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+
+                  // ── Email field ──
+                  TextField(
+                    onChanged: (v) => vm.updateEmail(v),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: '邮箱',
+                      hintText: 'your@email.com',
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(appTheme.radiusSm),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Password field ──
+                  TextField(
+                    onChanged: (v) => vm.updatePassword(v),
+                    obscureText: true,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      labelText: '密码',
+                      hintText: '至少 6 位',
+                      prefixIcon: Icon(
+                        Icons.lock_outlined,
+                        color: colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerLow,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(appTheme.radiusSm),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // ── Login button ──
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: userState.isLoading
+                        ? Center(
+                            child: SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          )
+                        : FilledButton(
+                            onPressed: canSubmit
+                                ? () {
+                                    Future.microtask(() async {
+                                      final result = await vm.login();
+                                      result.when(
+                                        success: (_) => context.replaceRoute(
+                                          const HomeRoute(),
+                                        ),
+                                        failure: (error) => _showError(
+                                          context,
+                                          userErrorMessage(error),
+                                        ),
+                                      );
+                                    });
+                                  }
+                                : null,
+                            style: FilledButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  appTheme.radiusSm,
+                                ),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: const Text(
+                              '登录',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -70,6 +182,8 @@ class LoginPage extends HookWidget {
       SnackBar(
         content: Text(message),
         backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/core/config/theme_extension.dart';
 
-/// 空状态组件
-///
-/// 统一展示列表/内容为空时的占位提示。
+/// 统一空状态组件
 class EmptyWidget extends StatelessWidget {
   const EmptyWidget({
     super.key,
@@ -20,6 +19,8 @@ class EmptyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final appTheme = AppThemeExtension.of(context);
 
     return Center(
       child: Padding(
@@ -27,16 +28,25 @@ class EmptyWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon ?? Icons.inbox_rounded,
-              size: 64,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+            // ── Empty icon container ──
+            Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(appTheme.radiusLg),
+              ),
+              child: Icon(
+                icon ?? Icons.inbox_rounded,
+                size: 40,
+                color: colorScheme.onSurface.withValues(alpha: 0.2),
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               message,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                color: appTheme.textSubtle,
               ),
               textAlign: TextAlign.center,
             ),
@@ -44,6 +54,11 @@ class EmptyWidget extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton.tonal(
                 onPressed: onAction,
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(appTheme.radiusSm),
+                  ),
+                ),
                 child: Text(actionLabel!),
               ),
             ],
