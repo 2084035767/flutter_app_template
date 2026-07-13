@@ -99,6 +99,16 @@ void main() async {
     'class $newClassName',
   );
 
+  // ── Copy .env.example to .env.development if not exists ──
+  final envDev = File('.env.development');
+  if (!envDev.existsSync()) {
+    final envExample = File('.env.example');
+    if (envExample.existsSync()) {
+      envDev.writeAsStringSync(envExample.readAsStringSync());
+      print('  ✓ Created: .env.development (from .env.example)');
+    }
+  }
+
   print('');
   print('✅ Project initialized!');
   print('');
@@ -108,8 +118,9 @@ void main() async {
     '  2. Regenerate code: dart run build_runner build --delete-conflicting-outputs',
   );
   print('  3. Verify with: flutter analyze');
+  print('  4. Set environment: edit .env.development');
   print(
-    '  4. Commit: git add -A && git commit -m "chore: init project as $dartName"',
+    '  5. Commit: git add -A && git commit -m "chore: init project as $dartName"',
   );
 }
 

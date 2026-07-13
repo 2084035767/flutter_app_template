@@ -29,7 +29,7 @@ jobs:
       - name: Analyze custom lint rules (packages/my_app_lint/)
         run: dart analyze packages/my_app_lint/lib/
 
-  test:
+  unit-test:
     needs: analyze
     runs-on: ubuntu-latest
     steps:
@@ -43,5 +43,25 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run tests
+      - name: Run unit & widget tests
         run: flutter test
+
+  integration-test:
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.x"
+          channel: "stable"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y xvfb
+          flutter pub get
+
+      - name: Run integration tests
+        run: xvfb-run flutter test integration_test/

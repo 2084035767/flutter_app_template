@@ -1,29 +1,17 @@
 # Quality Guidelines
 
-> Code quality standards for frontend (UI layer) development.
+> Code quality standards for this project.
 
 ---
 
-## Overview
+## Resolved Quality Issues
 
-These guidelines apply to the UI layer — all code under `lib/features/*/page/`, `lib/core/presentation/`, `lib/app.dart`, etc.
-
-This is a **personal Flutter scaffold/template** for medium-small apps. Quality standards here reflect what you'd want in a reliable starting point.
-
----
-
-## Scaffold: Resolved Quality Issues (P0 Audit, July 2026)
-
-The following issues were identified and fixed during the initial quality audit.
-**Do not reintroduce them in new features built from this scaffold:**
-
-- ✅ **LoginPage ViewModel lifetime** — Previously a StatelessWidget calling `getIt<AuthViewModel>()` in `build()`. Fixed: StatefulWidget with `initState`/`dispose`.
-- ✅ **ArticleDetailPage unsafe casting** — Previously used `state.extra as dynamic`. Fixed: path parameter parsing via `GoRouterStateX.getInt()`.
-- ✅ **Article model missing body field** — Added `String body` for full article content.
-- ✅ **FileStorage DI annotation** — Changed from `@LazySingleton()` to `@Singleton()` for eager registration.
-- ✅ **Profile page placeholders** — Replaced English placeholders with generic Chinese template.
-- ✅ **Missing `disposed` guards** — All async ViewModel methods now check `isDisposed` after await.
-- ✅ **ViewModel boilerplate** — Added `runAsync` helper to BaseViewModel to standardize loading/data/error flow.
+- ✅ **LoginPage ViewModel lifetime** — Converted from StatelessWidget to StatefulWidget/HookWidget with proper `getIt<AuthViewModel>()` in `initState`.
+- ✅ **`runAsync` helper** — Added to core/base for standardizing loading → data/error flow.
+- ✅ **Disposed guards** — `runAsync` accepts optional `disposed` signal to avoid updating after dispose.
+- ✅ **Global error boundary** — `bootstrap.dart` wraps app in `runZonedGuarded` + `FlutterError.onError` + `PlatformDispatcher.onError`.
+- ✅ **Auth lifecycle** — `AuthStorage` now properly initialized via DI. `AuthInterceptor` handles 401 auto-logout.
+- ✅ **Dynamic route guard** — `AppRouter` rebuilds on auth state change via signal listener.
 
 ---
 
@@ -31,55 +19,25 @@ The following issues were identified and fixed during the initial quality audit.
 
 ❌ **Never use these patterns**:
 
-1. **`print()` in production code** — Linter enforces `avoid_print`. Use `Logging` class or `debugPrint()` for debug info.
+1. **`print()` in production code** — Use `Logging.info()` / `Logging.error()` instead.
 
-2. **Hardcoded colors, fonts, or padding values** — Always use `Theme.of(context)`, `colorScheme`, or `DesignTokens`
+2. **Hardcoded colors/fonts/padding** — Always use `Theme.of(context)` or `colorScheme`.
 
-   ```dart
-   // BAD
-   Text('hello', style: TextStyle(fontSize: 18, color: Colors.blue));
+3. **Business logic in widgets** — All async operations belong in ViewModels or Services.
 
-   // GOOD
-   Text('hello', style: theme.textTheme.titleLarge?.copyWith(
-     color: theme.colorScheme.primary,
-   ));
-   ```
+4. **Direct ViewModel instantiation** — Always `getIt<ArticleViewModel>()`.
 
-3. **Business logic in widgets** — All async operations and state mutations belong in ViewModels
+5. **ViewModel creation in `build()`** — Creates new instance per rebuild, old one leaks. Use `getIt` + `useMemoized`.
 
-   ```dart
-   // BAD
-   ElevatedButton(
-     onPressed: () async {
-       final result = await api.login(email, password);  // ❌ API call in widget
-     },
-   )
+6. **`setState()` for async/API data** — Use `asyncSignal` for data fetching.
 
-   // GOOD
-   ElevatedButton(
-     onPressed: () => vm.login().then(...)  // ViewModel handles the call
-   )
-   ```
+7. **Unguarded async callbacks** — Button `onPressed` callbacks must be wrapped (use `Future.microtask` or try-catch).
 
-4. **Direct ViewModel instantiation** — Always use `getIt<ArticleViewModel>()` from DI
+8. **`withOpacity()`** — Use `Color.withValues(alpha: X)` (Dart 3+).
 
-   ```dart
-   // BAD
-   final vm = ArticleViewModel(repo);
+9. **`getIt()` in ViewModels** — ViewModels must use constructor injection. The `avoid_getit_in_view_model` lint rule enforces this.
 
-   // GOOD
-   final vm = getIt<ArticleViewModel>();
-   ```
-
-5. **ViewModel creation in `build()` method** — Creates new instance on every rebuild, old one leaks. Create in `initState()`.
-
-6. **`setState()` for API/async data** — Use Signals (`asyncSignal`) for async state; `setState()` is for truly local UI state only
-
-7. **Missing `const` constructors** — Linter enforces `prefer_const_constructors`; always use `const` for widgets
-
-8. **`state.extra as dynamic` in routing** — Always extract route params via `GoRouterStateX.getInt()` / `getString()` from pathParameters
-
-9. **`withOpacity()`/`Opacity` widget** — Use `Color.withValues(alpha: X)` instead (Dart 3+ API)
+10. **Feature imports another feature's page/ or logic/** — Only core/ and other feature's data/ are allowed. The `avoid_feature_cross_import` lint rule enforces this.
 
 ---
 
@@ -87,128 +45,162 @@ The following issues were identified and fixed during the initial quality audit.
 
 ✅ **Always use these patterns**:
 
-1. **`Watch.builder` for signals reactivity**:
-
-   ```dart
-   Watch.builder(
-     builder: (context) {
-       final async = _vm.articles.value;
-       if (async.isLoading) return const LoadingIndicator();
-       ...
-     },
-   )
-   ```
-
-2. **ViewModel lifecycle management**:
-
-   ```dart
-   @override
-   void initState() {
-     super.initState();
-     _vm = getIt<ArticleViewModel>();
-     _vm.load();
-   }
-
-   @override
-   void dispose() {
-     _vm.dispose();
-     super.dispose();
-   }
-   ```
-
-3. **Three-state rendering pattern** in every page with async data:
+1. **Three-state rendering in every async page**:
 
    ```dart
    if (async.isLoading) return const LoadingIndicator();
-   if (_vm.hasError) return ErrorText(error: ..., onRetry: ...);
+   if (async.hasError) return ErrorText(error: ..., onRetry: ...);
    if (data.isEmpty) return EmptyWidget(message: '暂无数据');
    return ListView.builder(...); // Data view
    ```
 
-4. **`mounted` check after async gaps** in StatefulWidget methods:
+2. **`runAsync` for async operations**:
 
    ```dart
-   final result = await someAsyncOp();
-   if (!mounted) return;
-   // safe to use context / setState here
+   await runAsync(_articles, () => _repo.getArticles());
    ```
 
-5. **`disposed` guard after async gaps** in ViewModel methods:
+3. **`Theme.of(context)` at start of build**:
 
    ```dart
-   final result = await _repo.getArticles();
-   if (disposed) return;
-   // safe to update signals here
+   final theme = Theme.of(context);
    ```
 
-6. **`runAsync` helper** for standard loading → data/error flow in ViewModels:
+4. **`const` constructors** for all widgets.
+
+5. **`useSignalValue` for hook-based signal consumption**:
 
    ```dart
-   final failure = await runAsync(
-     () => _repo.getArticles(),
-     into: articles,
-     failInto: currentFailure,
-   );
+   final async = useSignalValue(vm.articles);
    ```
-
-7. **`const` for childless constructors** and `const` for stateless widgets
-
-8. **`Theme.of(context)` at the start of build methods**:
-
-   ```dart
-   @override
-   Widget build(BuildContext context) {
-     final theme = Theme.of(context);
-     // use theme throughout
-   }
-   ```
-
-9. **Type-safe routing** — Always use `GoRouterStateX.getInt('id')` for route params, never `state.extra as dynamic`
 
 ---
 
-## Code Review Checklist
+## Error Handling Hierarchy
 
-When reviewing frontend code, check:
+```
+runZonedGuarded         → 未捕获的 zone 异常（兜底）
+  └─ FlutterError.onError       → Flutter 框架错误
+  └─ PlatformDispatcher         → 平台层异步错误
+  └─ AuthInterceptor.onError    → 401 自动登出
+  └─ Result<_, Failure>         → 业务层错误（类型安全）
+  └─ runAsync                   → ViewModel 层错误统一处理
+```
 
-- [ ] Are ViewModels created in `initState()` (not `build()`)?
-- [ ] Are ViewModels properly disposed in `dispose()`?
-- [ ] Is `disposed` checked after async operations in ViewModels?
-- [ ] Is `mounted` checked after async operations in StatefulWidgets?
-- [ ] Are colors/fonts using `Theme.of(context)` instead of hardcoded values?
-- [ ] Is the three-state pattern followed (loading → error/empty → data)?
-- [ ] Is business logic in ViewModel, not in widget build methods?
-- [ ] Are `const` constructors used where possible?
-- [ ] Are DI services accessed via `getIt<>()` not direct instantiation?
-- [ ] Are route params type-safe (no `as dynamic` casts)?
-- [ ] Are assets referenced via `Assets.xxx` (generated) not string paths?
-- [ ] Are imports clean (no unused imports)?
-- [ ] Is `print()` avoided (using `Logging` or `debugPrint` instead)?
+- 所有 API 调用返回 `Result<T, Failure>`（业务层不抛异常）
+- 所有 ViewModel 用 `runAsync` 处理 async 三态
+- 401 由 `AuthInterceptor` 自动处理（清除 auth + 触发 UI 重建）
+- 以上都漏掉的由 `runZonedGuarded` 兜底并记日志
+
+---
+
+---
+
+## Custom Lint Rules (`my_app_lint`)
+
+该项目有两条自定义 lint 规则，通过 `analysis_server_plugin` 加载。
+
+| 规则 | 效果 | 配置位置 |
+|------|------|----------|
+| `avoid_getit_in_view_model` | 禁止在 `features/*/logic/` 中使用 `getIt()`，强制构造器注入 | `analysis_options.yaml` → `plugins.my_app_lint.diagnostics` |
+| `avoid_feature_cross_import` | 禁止 feature 引用其他 feature 的 `page/` 或 `logic/`，强制 FSD 层约束 | 同上 |
+
+### 工作原理
+
+- 规则通过 `analysis_server_plugin` 框架加载（与 `signals_lint` 相同机制）
+- **IDE 中生效**（VS Code / IntelliJ 等使用 analysis server 的编辑器）
+- CLI `flutter analyze` / `dart analyze` **不会触发**这些规则（这是 `analysis_server_plugin` 架构的限制，与 `signals_lint` 一致）
+- 规则定义在 `packages/my_app_lint/` 独立包中
+
+### 禁止模式
+
+```dart
+// ❌ avoid_getit_in_view_model — ViewModel 里不能用 getIt()
+class ArticleViewModel {
+  final repo = getIt<ArticleRepository>();
+}
+
+// ✅ 正确：构造器注入
+class ArticleViewModel {
+  final ArticleRepository repo;
+  ArticleViewModel(this.repo);
+}
+```
+
+```dart
+// ❌ avoid_feature_cross_import — 不能引用其他 feature 的 page/logic
+import 'package:my_app/features/auth/page/login_page.dart';
+import 'package:my_app/features/auth/logic/auth_view_model.dart';
+
+// ✅ 允许：引用 core 或其他 feature 的 data 层
+import 'package:my_app/features/auth/data/models/user.dart';
+import 'package:my_app/core/routing/app_router.dart';
+```
+
+---
+
+---
+
+## Memory Leak Detection (`leak_tracker`)
+
+`leak_tracker` 已集成到脚手架中，用于开发期自动检测内存泄漏。
+
+### 运行期检测（debug 模式）
+
+在 `bootstrap.dart` 中通过 `_initLeakTracker()` 初始化，debug 模式下自动启用：
+
+- 监听 `FlutterMemoryAllocations` 事件（Flutter 框架对象的创建/销毁）
+- 在控制台输出未释放的对象信息
+- release 模式下不生效（`assert` 块仅在 debug 模式执行）
+
+### 测试检测
+
+`test/flutter_test_config.dart` 配置了全局泄漏检测：
+
+- 所有 `testWidgets` 自动启用 `LeakTesting`
+- 测试中未 dispose 的 Widget、Controller、信号订阅等会被报告
+- 通过 `withIgnored(createdByTestHelpers: true)` 过滤测试辅助创建的对象
+
+### 检测范围
+
+`leak_tracker` 只能检测到**已接入埋点**的类。好消息是：
+
+- Flutter Framework 的所有 disposable 类都已接入（`FocusNode`、`AnimationController` 等）
+- `SignalBuilder` 等 signals_flutter 组件在 `dispose` 时会自动取消订阅
+- 如果一个泄漏链中包含至少一个已埋点的对象，整个链都会被捕获
+
+---
+
+## Integration Testing
+
+`integration_test/app_test.dart` 包含基础的端到端冒烟测试。
+
+### 本地运行
+
+```bash
+flutter test integration_test/
+```
+
+### CI 运行
+
+CI 使用 `xvfb-run`（虚拟显示）运行集成测试。
+
+### 测试内容
+
+当前集成测试覆盖：
+
+- 应用正常启动并显示登录页面
+- 输入邮箱和密码后登录按钮启用
+- 空字段时登录按钮禁用
+
+> 注意：集成测试依赖 `msw_dio_interceptor`（`NetworkConfig.isMock = true`）提供的 mock API。
 
 ---
 
 ## Testing Requirements
 
-This scaffold provides reference tests as templates for new features:
-
-### Unit Tests
-
-- `test/shared/view_models/base_view_model_test.dart` — tests `runAsync` helper, `disposed` guard, and effect lifecycle
-- Use `flutter test <file>` to run individual test files
-
-### Widget Tests
-
-- `test/features/auth/page/login_page_test.dart` — tests rendering, button state, and loading indicator
-- Mock ViewModels via `getIt.registerFactory` override in `setUp`/`tearDown`
-- Use `tester.pumpWidget(MaterialApp(home: Widget))` to render under test
-
-### Code Review: Testing Checklist
-
-When reviewing test files for new features, check:
-
-- [ ] Test file mirrors the `lib/` directory structure
-- [ ] Test file name ends with `_test.dart`
-- [ ] DI is properly set up in `setUp` and cleaned in `tearDown`
-- [ ] ViewModels are disposed after each test
-- [ ] Widget tests use `tester.pumpAndSettle()` for async UI updates
-- [ ] `flutter test` passes for the new test file
+- 测试文件路径跟随源码结构：`test/features/{feature}/{subdir}/` 对应 `lib/features/{feature}/{subdir}/`
+- ViewModel 测试直接构造，无需 DI（`ArticleViewModel(mockRepo)`）
+- 需要 DI 的 widget 测试：`setUp`/`tearDown` 中注册/清理 mock
+- Integration tests: `integration_test/` 目录
+- 新增 widget 测试时确保 `flutter_test_config.dart` 中的 `LeakTesting` 配置合适

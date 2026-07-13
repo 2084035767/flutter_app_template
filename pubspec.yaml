@@ -55,12 +55,15 @@ dependencies:
   device_info_plus: ^13.2.0
   flutter_dotenv: ^6.0.0
   intl: ^0.20.3
+  leak_tracker: any # 内存泄漏检测（debug 模式自动启用）
 
 # ──────────────────────────────────────────────
 # 开发依赖（编译期工具、调试、测试）
 # ──────────────────────────────────────────────
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
   # ── Code Gen：序列化 ──
@@ -90,6 +93,7 @@ dev_dependencies:
 
   # ── 测试 ──
   mocktail: ^1.0.5
+  leak_tracker_flutter_testing: any # 测试内存泄漏检测
 
   # ── 构建工具 ──
   flutter_lints: ^6.0.0 # Lint 规则集
