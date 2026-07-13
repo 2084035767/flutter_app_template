@@ -7,95 +7,109 @@ environment:
   sdk: ">=3.9.2 <4.0.0"
   flutter: ">=3.38.0"
 
+# ──────────────────────────────────────────────
+# 生产依赖（编译和运行期都需要）
+# ──────────────────────────────────────────────
 dependencies:
   flutter:
     sdk: flutter
-  # --- Routing ---
-  # --- State Management ---
+
+  # ── State Management ──
   signals_flutter: ^7.1.0
   signals_hooks: ^7.1.0
   flutter_hooks: ^0.21.3+1
 
-  # --- Dependency Injection ---
+  # ── Dependency Injection ──
   get_it: ^9.2.0
-  # --- Network & API ---
+  injectable: ^3.0.0 # 运行时注解，DI 自动注册
+
+  # ── Network & API ──
   dio: ^5.10.0
   dio_smart_retry: ^7.0.1
-  pretty_dio_logger: ^1.4.0
-  retrofit: ^4.9.2
+  pretty_dio_logger: ^1.4.0 # 调试日志，kDebugMode 下启用
+  msw_dio_interceptor: ^1.0.5 # Mock API，isMock 开关控制
+  retrofit: ^4.9.2 # 运行时注解，API 客户端生成
 
-  # --- Data & Persistence ---
+  # ── Data & Persistence ──
   shared_preferences: ^2.5.3
-  # isar_community: ^3.3.0
-  # isar_community_flutter_libs: ^3.3.0
-  path_provider: 2.1.0
+  path_provider: ^2.1.0
+  drift: ^2.34.1 # 运行时注解，数据库引擎
+  sqlite3_flutter_libs: ^0.5.0
 
-  # --- UI & Assets ---
-  # chinese_font_library: ^1.2.0
-  # flutter_carousel_widget: ^3.1.0
+  # ── Assets & UI ──
   flutter_gen: ^5.12.0
-  lottie: ^3.3.2
   flutter_svg: ^2.2.3
-  # cupertino_icons: ^1.0.8
+  lottie: ^3.3.2
+  flex_color_scheme: ^8.4.0
+  shimmer: ^3.0.0
 
-  # --- Utils & Others ---
+  # ── Serialization（运行时依赖） ──
+  json_annotation: ^4.12.0 # @JsonSerializable 注解
+  freezed_annotation: ^3.1.0 # @freezed 注解
+
+  # ── Routing（运行时依赖） ──
+  auto_route: ^11.1.0 # @RoutePage 注解
+
+  # ── Utils ──
   logger: ^2.6.2
   device_info_plus: ^13.2.0
   flutter_dotenv: ^6.0.0
-  json_annotation: 4.12.0
-  freezed_annotation: ^3.1.0
-  auto_route: ^11.1.0
-  auto_route_generator: ^10.6.0
-  drift: 2.34.1
-  sqlite3_flutter_libs: 0.5.0
-  flex_color_scheme: ^8.4.0
   intl: ^0.20.3
-  shimmer: ^3.0.0
-  injectable: 3.0.0
-  msw_dio_interceptor: ^1.0.5
+
+# ──────────────────────────────────────────────
+# 开发依赖（编译期工具、调试、测试）
+# ──────────────────────────────────────────────
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.4
 
-  # --- Code Generation ---
-  build_runner: ^2.4.14
-  # isar_community_generator: ^3.3.0
-  json_serializable: ^6.9.3
-  flutter_gen_runner: ^5.12.0
-  retrofit_generator: ^10.2.1
-  signals_lint: 7.1.0
-  freezed: ^4.0.0-dev.3
-  drift_dev: 2.34.2+1
-  injectable_generator: 3.1.0
+  # ── Code Gen：序列化 ──
+  json_serializable: ^6.9.3 # 生成 toJson/fromJson
+  freezed: ^4.0.0-dev.3 # 生成 copyWith/==/hashCode
+
+  # ── Code Gen：DI ──
+  injectable_generator: ^3.1.0 # 生成 ServiceLocator 注册代码
+
+  # ── Code Gen：API ──
+  retrofit_generator: ^10.2.1 # 生成 Retrofit 客户端实现
+
+  # ── Code Gen：数据库 ──
+  drift_dev: ^2.34.2+1 # 生成 Drift DAO 代码
+
+  # ── Code Gen：路由 ──
+  auto_route_generator: ^10.6.0
+
+  # ── Code Gen：通用 ──
+  build_runner: ^2.4.14 # codegen 执行引擎
+  flutter_gen_runner: ^5.12.0 # 生成 Assets 引用
+
+  # ── 静态分析 ──
+  signals_lint: ^7.1.0
+  my_app_lint:
+    path: packages/my_app_lint
+
+  # ── 测试 ──
   mocktail: ^1.0.5
 
-# --- Flutter Launcher Icons Plugin ---
+  # ── 构建工具 ──
+  flutter_lints: ^6.0.0 # Lint 规则集
+  flutter_launcher_icons: ^0.14.4
+
+# ──────────────────────────────────────────────
+# 插件配置
+# ──────────────────────────────────────────────
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
 
-# --- Code Generation Settings ---
 flutter_gen:
   output: lib/gen/
   line_length: 80
 
-# --- Flutter Specific Settings ---
 flutter:
   uses-material-design: true
-
-  # --- Assets Configuration (Uncomment to use) ---
   assets:
     - .env
     - assets/json/lottie-404.json
     - assets/json/lottie-cta.json
-
-  # --- Fonts Configuration (Uncomment to use) ---
-  # fonts:
-  #   - family: Inter
-  #     fonts:
-  #       - asset: assets/fonts/Inter-Regular.ttf
-  #       - asset: assets/fonts/Inter-Bold.ttf
-  #         weight: 700

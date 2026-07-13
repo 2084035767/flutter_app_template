@@ -1,191 +1,242 @@
-# Flutter快速开发模板
+# Flutter 通用脚手架
 
-这是一个基于Flutter的现代化快速开发模板项目，旨在帮助开发者快速构建高质量的Flutter应用程序。该项目集成了最佳实践、常用的架构模式以及精选的技术栈，让你专注于业务逻辑而不是基础设施。
+一个基于 Flutter 的中小型项目脚手架，采用 **Feature-Sliced Design (FSD)** 架构 + **Signals** 响应式状态管理，集成现代化技术栈，开箱即用。
 
 ## ✨ 特性
 
-- **清晰的架构**: 采用功能模块化设计，分层清晰（core、features、shared、di）
-- **状态管理**: 使用 signals 进行高效的状态管理
-- **路由管理**: 集成 go_router 实现声明式导航
-- **依赖注入**: 使用 get_it 和 injectable 实现依赖注入
-- **网络请求**: 基于 dio 的网络层封装
-- **本地存储**: 使用 shared_preferences 处理本地数据
-- **错误处理**: 统一的错误处理机制
-- **主题系统**: 支持亮色/暗色主题切换
-- **代码生成**: 支持 json_serializable 自动序列化
+- **FSD 功能切片** — 按业务模块组织代码（page/logic/data），高内聚低耦合
+- **Signals 响应式状态** — 细粒度响应式更新，无需 BuildContext，无 widget 树级重建
+- **声明式路由** — `auto_route` 类型安全路由，支持 auth 守卫和参数解析
+- **依赖注入** — `injectable` + `GetIt`，注解驱动自动注册
+- **网络层封装** — `Dio` + `Retrofit` + 智能重试 + Mock 拦截
+- **错误处理** — 统一的 `Result<T, E>` + `Failure` 密封类，`runZonedGuarded` 兜底
+- **MD3 主题** — `flex_color_scheme`，亮/暗主题完整支持
+- **通用组件** — Loading / Error / Empty 三态组件，`shimmer` 骨架屏
+- **代码生成** — `freezed` / `json_serializable` / `retrofit_generator` / `flutter_gen`
+- **自定义 lint 规则** — `avoid_getit_in_view_model` + `avoid_feature_cross_import`（FSD 约束）
+- **数据库** — `Drift`（SQLite ORM，可选按需使用）
+- **测试基础设施** — `mocktail` 模拟，已含 ViewModel / Widget / 数据库测试
 
 ## 🛠️ 技术栈
 
-- **框架**: Flutter 3.x
-- **语言**: Dart
-- **状态管理**: signals
-- **路由管理**: go_router
-- **依赖注入**: get_it, injectable
-- **网络请求**: dio
-- **本地存储**: shared_preferences
-- **代码生成**: json_serializable, build_runner
-- **测试框架**: flutter_test, mocktail
-- **国际化**: 支持多语言（待实现）
-- **主题**: Material Design 3
+| 类别 | 技术 |
+| ------ | ------ |
+| 状态管理 | `signals_flutter` `signals_hooks` `flutter_hooks` |
+| 路由 | `auto_route` |
+| 依赖注入 | `get_it` `injectable` |
+| 网络 | `dio` `dio_smart_retry` `retrofit` `pretty_dio_logger` |
+| Mock API | `msw_dio_interceptor` |
+| 数据库 | `drift` `sqlite3_flutter_libs` |
+| 本地存储 | `shared_preferences` `path_provider` |
+| 代码生成 | `freezed` `json_serializable` `build_runner` `flutter_gen` |
+| 主题 | `flex_color_scheme` |
+| UI 辅助 | `lottie` `flutter_svg` `shimmer` |
+| 日志 | `logger` |
+| 静态分析 | `flutter_lints` `signals_lint` + 自定义 `my_app_lint` |
+| 测试 | `flutter_test` `mocktail` |
 
 ## 📁 目录结构
 
 ```
 lib/
-├── app.dart                    # 应用根组件
-├── main.dart                   # 程序入口
-├── core/                       # 核心模块
-│   ├── error/                  # 错误处理
-│   ├── local/                  # 本地存储
-│   ├── network/                # 网络模块
-│   ├── routing/                # 路由配置
-│   ├── theme/                  # 主题配置
-│   └── app_config.dart         # 应用配置
-├── di/                         # 依赖注入配置
-│   ├── app_module.dart         # 依赖注入模块
-│   └── service_locator.dart    # 服务定位器
-├── features/                   # 功能模块
-│   ├── auth/                   # 认证模块
-│   │   ├── application/        # ViewModel层
-│   │   ├── data/               # 数据层
-│   │   ├── domain/             # 业务逻辑层
-│   │   └── page/               # UI层
-│   ├── article/                # 文章模块（示例）
-│   ├── home/                   # 首页模块
-│   └── profile/                # 个人资料模块
-├── shared/                     # 共享组件
-│   ├── utils/                  # 工具类
-│   └── widget/                 # 通用组件
-└── gen/                        # 代码生成文件
-    └── assets.gen.dart         # 资源文件生成
+├── main.dart                               # 程序入口
+├── bootstrap.dart                          # 启动初始化（zone + DI）
+├── app.dart                                # 应用根组件（路由 + 主题）
+│
+├── core/                                   # 共享基础设施（精简克制）
+│   ├── base/                               # 基础抽象
+│   │   ├── result.dart                     # Result<T, E> 统一结果类型
+│   │   ├── failure.dart                    # Failure 密封类
+│   │   └── run_async.dart                  # runAsync 三态助手
+│   ├── config/                             # 应用配置
+│   │   └── app_config.dart                 # AppConfig（主题模式等）
+│   ├── data/
+│   │   ├── database/                       # Drift 数据库连接
+│   │   ├── network/                        # Dio 客户端 + 拦截器
+│   │   └── storage/                        # 本地持久化信号
+│   ├── logging/                            # 日志封装
+│   ├── presentation/                       # 通用 UI 组件
+│   │   └── widgets/
+│   │       ├── loading_indicator.dart      # Lottie 加载动画
+│   │       ├── error_text.dart             # 错误 + 重试
+│   │       └── empty_widget.dart           # 空状态
+│   └── routing/                            # auto_route 配置
+│
+├── features/                               # 业务功能模块
+│   ├── auth/                               # 认证（示例模块）
+│   │   ├── logic/                          # ViewModel（信号 + 业务逻辑）
+│   │   ├── data/                           # API + Service + Models
+│   │   └── page/                           # UI 页面
+│   ├── article/                            # 文章（示例模块）
+│   ├── home/                               # 首页
+│   └── profile/                            # 个人中心
+│
+└── di/                                     # 依赖注入注册
+    └── service_locator.config.dart          # injectable 自动生成
 ```
+
+模块内部每层职责：
+
+| 层 | 目录 | 职责 |
+| ---- | ------ | ------ |
+| **UI** | `page/` | 页面组件，获取 ViewModel，绑定信号 |
+| **Logic** | `logic/` | ViewModel，信号管理，业务编排 |
+| **Data** | `data/` | API (Retrofit)，Service，Models (freezed) |
 
 ## 🚀 快速开始
 
 ### 环境要求
 
-- Flutter SDK >= 3.x
-- Dart SDK (随Flutter SDK一起安装)
-
-### 安装步骤
-
-1. **克隆项目**
+- Flutter SDK >= 3.38.0
+- Dart SDK >= 3.9.2
 
 ```bash
-git clone https://github.com/2084035767/flutter-app-template.git
-cd flutter-app-template
-```
-
-2. **安装依赖**
-
-```bash
+# 安装依赖
 flutter pub get
-```
 
-3. **生成代码（首次运行必须执行）**
-
-```bash
+# 代码生成（首次运行必须执行）
 dart run build_runner build --delete-conflicting-outputs
-```
 
-4. **运行项目**
-
-```bash
+# 运行
 flutter run
-```
 
-### 开发命令
+# 代码分析
+flutter analyze
 
-- **生成代码**（在修改模型类后执行）:
-
-```bash
-dart run build_runner build
-```
-
-- **清理并重新生成代码**:
-
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-
-- **运行测试**:
-
-```bash
+# 运行测试
 flutter test
 ```
 
-- **格式化代码**:
+### 从脚手架创建新项目
 
 ```bash
-flutter format .
+# 交互式初始化
+dart run tool/init_project.dart
 ```
 
-- **检查代码问题**:
+也可参照 [AGENTS.md](AGENTS.md) 手动操作。
 
-```bash
-flutter analyze
+## 📐 如何添加新功能模块
+
+### 目录模板
+
+```
+features/your_feature/
+├── logic/
+│   └── your_view_model.dart           # ViewModel（信号 + runAsync）
+├── data/
+│   ├── models/                        # 数据模型（freezed/json_serializable）
+│   ├── your_api.dart                  # Retrofit API 接口（可选）
+│   ├── your_service.dart              # 业务实现
+│   └── your_repository.dart           # 仓库抽象接口（按需）
+└── page/
+    └── your_page.dart                 # UI 页面
 ```
 
-## 🔧 项目配置
+### ViewModel 模板
 
-### 添加新功能模块
+```dart
+@injectable
+class YourViewModel {
+  final YourService _service;
 
-1. 在 [features](file:///f:/App/flutter_app/lib/features) 目录下创建新模块文件夹
-2. 创建子目录结构：[application](file:///f:/App/flutter_app/lib/features/article/application/article_view_model.dart)、[data](file:///f:/App/flutter_app/lib/features/article/data/article_api.dart)、[domain](file:///f:/App/flutter_app/lib/features/article/domain/article_repository.dart)、[page](file:///f:/App/flutter_app/lib/features/article/page/article_list_page.dart)
-3. 在 [di/app_module.dart](file:///f:/App/flutter_app/lib/di/app_module.dart) 中注册依赖
-4. 在 [routes](file:///f:/App/flutter_app/lib/core/routing/app_router.dart) 中添加路由
+  YourViewModel(this._service);
 
-### 修改主题
+  final items = asyncSignal<List<Item>>(AsyncState.data([]));
 
-修改 [core/theme](file:///f:/App/flutter_app/lib/core) 下的相关文件来自定义应用主题。
+  Future<void> load() async {
+    await runAsync(items, () => _service.getItems());
+  }
+}
+```
 
-### 网络配置
+### 页面模板
 
-修改 [core/network/network_module.dart](file:///f:/App/flutter_app/lib/core/network/network_module.dart) 来配置网络请求相关设置。
+```dart
+@RoutePage()
+class YourPage extends HookWidget {
+  const YourPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = useMemoized(() => getIt<YourViewModel>());
+    final async = useSignalValue(vm.items);
+
+    useEffect(() {
+      vm.load();
+      return null;
+    }, []);
+
+    return Scaffold(
+      body: Switch(
+        async,
+        loading: () => const LoadingIndicator(),
+        error: (e) => ErrorText(error: e, onRetry: vm.load),
+        data: (items) => ListView.builder(/* ... */),
+      ),
+    );
+  }
+}
+```
 
 ## 🧪 测试
 
-项目支持单元测试、集成测试和小部件测试：
-
 ```bash
-# 运行所有测试
+# 全部测试
 flutter test
 
-# 运行特定测试文件
-flutter test test/unit_test.dart
+# 特定测试文件
+flutter test test/features/article/logic/article_view_model_test.dart
 
-# 运行集成测试
-flutter test integration_test/
+# 覆盖率（需要安装 coverage 包）
+dart run coverage:test_with_coverage
 ```
 
-## 📦 构建发布版本
+测试原则：
 
-### Android
+- ViewModel 测试直接构造，无需 DI：`ArticleViewModel(mockRepo)`
+- 使用 `mocktail` 模拟外部依赖
+- widget 测试使用 `tester.pumpWidget` + `SignalBuilder`
 
-```bash
-flutter build apk --release
-# 或构建分架构版本
-flutter build apk --split-per-abi
+## 🔍 自定义 lint 规则
+
+两条自定义规则，在 IDE 中实时生效：
+
+| 规则 | 说明 |
+|------|------|
+| `avoid_getit_in_view_model` | 禁止 ViewModel 中使用 `getIt()`，强制构造器注入 |
+| `avoid_feature_cross_import` | 禁止 feature 引用其他 feature 的 `page/` / `logic/` |
+
+> 规则通过 `analysis_server_plugin` 框架加载（与 `signals_lint` 相同机制），在 VS Code / IntelliJ 中生效。CLI `flutter analyze` 暂不覆盖。
+
+## 🔧 开发工具
+
+- **`tool/init_project.dart`** — 交互式项目初始化（改名字、包名等）
+- **`.githooks/pre-commit`** — 提交前自动运行 `flutter analyze` + `flutter test`。安装：`git config core.hooksPath .githooks`
+- **`msw_dio_interceptor`** — 开发期 API Mock 拦截器
+
+## 🎨 架构原则
+
+### 数据流
+
+```
+Page (UI) → ViewModel → Service → API (Retrofit)
+                ↕              ↕
+            signals         Result<T, Failure>
+                ↕
+          Widget rebuild
 ```
 
-### iOS
+- **View Model**：通过构造器注入依赖，管理信号，调用 `runAsync` 处理异步三态
+- **Service**：业务逻辑实现，返回 `Result<T, Failure>`
+- **Page**：通过 `getIt` 获取 ViewModel，用 `useSignalValue` 绑定信号，不写业务逻辑
 
-```bash
-flutter build ios --release
-```
+### Feature 间通信
 
-## 🤝 贡献
-
-欢迎提交Issue和Pull Request来帮助我们改进这个项目！
+- 跨 feature 数据共享通过 `core/data/storage/` 中的全局信号
+- 不使用事件总线（调试困难）
+- 不引用其他 feature 的 `page/` 或 `logic/`（lint 规则强制）
 
 ## 📄 许可证
 
-MIT License
-
-## 👨‍💻 作者
-
-[子十](https://github.com/2084035767)
-
----
-
-如果你觉得这个项目对你有帮助，请给它一个 ⭐！
+MIT

@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Pre-commit hook for my_app scaffold.
+#
+# Runs flutter analyze and flutter test before allowing commits.
+# Install with: git config core.hooksPath .githooks
+#
+# To skip checks (emergency only):
+#   git commit --no-verify
+
+echo "🔍 Running pre-commit checks..."
+
+# Stash any unstaged changes so we only check what would be committed
+STASH_NAME="pre-commit-$(date +%s)"
+git stash push -q --keep-index --include-untracked --message "$STASH_NAME" 2>/dev/null || true
+
+# ── Run flutter analyze on lib/ and test/ ──
+echo "📐 Running flutter analyze..."
+flutter analyze lib/ test/
+ANALYZE_EXIT=$?
+
+# ── Run flutter test ──
+echo "🧪 Running flutter test..."
+flutter test
+TEST_EXIT=$?
+
+# Restore stashed changes
+git stash pop -q 2>/dev/null || true
+
+# ── Report results ──
+if [ $ANALYZE_EXIT -ne 0 ] || [ $TEST_EXIT -ne 0 ]; then
+    echo ""
+    echo "❌ Pre-commit checks failed!"
+    echo "   analyze: $([ $ANALYZE_EXIT -eq 0 ] && echo '✅' || echo '❌')"
+    echo "   test:    $([ $TEST_EXIT -eq 0 ] && echo '✅' || echo '❌')"
+    echo ""
+    echo "To skip (emergency only): git commit --no-verify"
+    exit 1
+fi
+
+echo ""
+echo "✅ All pre-commit checks passed!"
+exit 0

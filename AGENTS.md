@@ -17,7 +17,28 @@ This project is a **personal Flutter scaffold/template** for medium-small apps, 
 
 ### Starting a New Project From This Scaffold
 
-To create a new project from this scaffold:
+#### Quick way (automated)
+
+```bash
+dart run tool/init_project.dart
+```
+
+This interactive script updates the following files:
+
+- `pubspec.yaml` → `name`
+- `android/app/build.gradle.kts` → `applicationId`
+- `android/app/src/main/AndroidManifest.xml` → `android:label`
+- `ios/Runner/Info.plist` → `CFBundleDisplayName`
+- `lib/app.dart`, `lib/bootstrap.dart` → class name
+
+After the script:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+flutter analyze
+```
+
+#### Manual way
 
 1. Update `pubspec.yaml` → `name` field
 2. Update `android/app/build.gradle.kts` → `applicationId`
@@ -25,6 +46,21 @@ To create a new project from this scaffold:
 4. Update `ios/Runner/Info.plist` → `CFBundleDisplayName`
 5. Replace `MyApp` class name in `lib/app.dart` and `lib/bootstrap.dart`
 6. Run `dart run build_runner build --delete-conflicting-outputs` to regenerate configs
+
+### Pre-commit Hooks
+
+This scaffold includes a pre-commit hook in `.githooks/pre-commit` that runs:
+
+- `flutter analyze lib/ test/`
+- `flutter test`
+
+To activate:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+To skip (emergency only): `git commit --no-verify`
 
 ### Resolved Quality Issues
 

@@ -33,5 +33,14 @@ linter:
     # avoid_print: false  # Uncomment to disable the avoid_print rule
     # prefer_single_quotes: true  # Uncomment to enable
 
+# ──────────────────────────────────────────────
+# 自定义 lint 规则（my_app_lint plugin）
+# ──────────────────────────────────────────────
+plugins:
+  my_app_lint:
+    diagnostics:
+      avoid_getit_in_view_model: error
+      avoid_feature_cross_import: error
+
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

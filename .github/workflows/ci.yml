@@ -20,11 +20,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run code generator
-        run: dart run build_runner build
-
-      - name: Run analyzer
+      - name: Analyze app source (lib/)
         run: flutter analyze lib/
+
+      - name: Analyze app tests (test/)
+        run: flutter analyze test/
+
+      - name: Analyze custom lint rules (packages/my_app_lint/)
+        run: dart analyze packages/my_app_lint/lib/
 
   test:
     needs: analyze
