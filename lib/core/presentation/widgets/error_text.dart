@@ -3,12 +3,7 @@ import 'package:my_app/core/config/theme_extension.dart';
 
 /// 统一错误状态组件
 class ErrorText extends StatelessWidget {
-  const ErrorText({
-    super.key,
-    required this.error,
-    this.onRetry,
-    this.icon,
-  });
+  const ErrorText({super.key, required this.error, this.onRetry, this.icon});
 
   final Object error;
   final VoidCallback? onRetry;

@@ -36,6 +36,24 @@ my_app.code-workspace
 signals.md
 /build/
 /coverage/
+# Platform specific
+**/ios/Pods/
+**/macos/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/App.framework
+**/windows/flutter/ephemeral/
+**/windows/flutter/ephemeral/**/.dart_tool
+**/windows/flutter/ephemeral/**/.flutter-plugins-dependencies
+
+# Android KeyStore
+**/android/key.properties
+*.jks
+*.keystore
+
+# FVM
+.fvm/flutter_sdk
 
 # Symbolication related
 app.*.symbols
@@ -47,6 +65,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-.trae/
 nul

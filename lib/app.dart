@@ -73,9 +73,7 @@ ThemeData _buildLightTheme() {
     cardTheme: base.cardTheme.copyWith(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          AppThemeExtension.light.radiusMd,
-        ),
+        borderRadius: BorderRadius.circular(AppThemeExtension.light.radiusMd),
       ),
     ),
     chipTheme: base.chipTheme.copyWith(
@@ -111,9 +109,7 @@ ThemeData _buildDarkTheme() {
     cardTheme: base.cardTheme.copyWith(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          AppThemeExtension.dark.radiusMd,
-        ),
+        borderRadius: BorderRadius.circular(AppThemeExtension.dark.radiusMd),
       ),
     ),
     chipTheme: base.chipTheme.copyWith(

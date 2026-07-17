@@ -196,25 +196,28 @@ class _SettingItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-      leading: Icon(
-        icon,
-        color: colorScheme.onSurface.withValues(alpha: 0.6),
-        size: 22,
-      ),
-      title: Text(
-        title,
-        style: theme.textTheme.bodyLarge?.copyWith(
-          color: colorScheme.onSurface,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        leading: Icon(
+          icon,
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
+          size: 22,
         ),
+        title: Text(
+          title,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurface,
+          ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right,
+          color: colorScheme.onSurface.withValues(alpha: 0.2),
+          size: 20,
+        ),
+        onTap: onTap,
       ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: colorScheme.onSurface.withValues(alpha: 0.2),
-        size: 20,
-      ),
-      onTap: onTap,
     );
   }
 }
