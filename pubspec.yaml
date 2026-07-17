@@ -33,7 +33,7 @@ dependencies:
   # ── Data & Persistence ──
   shared_preferences: ^2.5.3
   path_provider: ^2.1.0
-  drift: ^2.34.1 # 运行时注解，数据库引擎
+  drift: ^2.34.2 # 运行时注解，数据库引擎
   sqlite3_flutter_libs: ^0.5.0
 
   # ── Assets & UI ──
