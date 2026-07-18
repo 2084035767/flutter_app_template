@@ -73,11 +73,7 @@ Future<void> bootstrap() async {
 void _validateEnv() {
   for (final key in _requiredEnvKeys) {
     if (dotenv.env[key] == null || dotenv.env[key]!.isEmpty) {
-      if (kReleaseMode) {
-        throw Exception('Missing required env key: $key');
-      } else {
-        Logging.warning('⚠️ Missing env key: $key — using defaults');
-      }
+      throw Exception('Missing required env key: $key');
     }
   }
 }

@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/core/base/run_async.dart';
 import 'package:my_app/core/config/app_config.dart';
 import 'package:my_app/core/config/theme_extension.dart';
 import 'package:my_app/core/routing/router.dart';
 import 'package:my_app/di/service_locator.dart';
 import 'package:my_app/features/auth/data/models/user.dart';
-
+import 'package:my_app/features/auth/logic/auth_view_model.dart';
 /// 个人中心页
 @RoutePage()
 class ProfilePage extends StatelessWidget {
@@ -149,10 +150,21 @@ class ProfilePage extends StatelessWidget {
   }
 
   Future<void> _logout(BuildContext context) async {
-    final config = getIt<AppConfig>();
-    await config.auth.clearAuth();
+    final vm = getIt<AuthViewModel>();
+    final result = await vm.logout();
     if (context.mounted) {
-      context.replaceRoute(const LoginRoute());
+      result.when(
+        success: (_) => context.replaceRoute(const LoginRoute()),
+        failure: (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(userErrorMessage(error)),
+              backgroundColor: Theme.of(context).colorScheme.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+      );
     }
   }
 }

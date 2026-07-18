@@ -83,7 +83,7 @@ void _registerMockRules() {
   );
   MockRegistry.register(
     MockRule(
-      path: '/articles/',
+      path: '/articles/:id',
       method: 'GET',
       handler: (_) => MockResponse.text(
         '{"id":1,"title":"Flutter 3.44 新特性解析","body":"Flutter 3.44 新特性详情..."}',

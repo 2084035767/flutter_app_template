@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   void _onTabTapped(int index) {
     if (index == _currentIndex) return;
     setState(() => _currentIndex = index);
-    context.replaceRoute(_routes[index]);
+    context.router.navigate(_routes[index]);
   }
 
   @override

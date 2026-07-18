@@ -26,8 +26,7 @@ class AuthService implements AuthRepository {
       await _storage.saveUser(user);
       return Result.success(user);
     } on DioException catch (e) {
-      final apiError = handleError(e);
-      return Result.failure(Failure.fromApiError(apiError));
+      return Result.failure(handleError(e));
     } catch (e) {
       return Result.failure(Failure.unknown(e.toString()));
     }
@@ -41,8 +40,7 @@ class AuthService implements AuthRepository {
       await _storage.clearAuth();
       return const Result.success(null);
     } on DioException catch (e) {
-      final apiError = handleError(e);
-      return Result.failure(Failure.fromApiError(apiError));
+      return Result.failure(handleError(e));
     } catch (e) {
       return Result.failure(Failure.unknown(e.toString()));
     }

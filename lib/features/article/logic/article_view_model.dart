@@ -17,8 +17,8 @@ class ArticleViewModel {
   ArticleViewModel(this._repo);
 
   // ========== 信号（公开，UI 通过 hooks 订阅）==========
-  final articles = asyncSignal<List<Article>>(AsyncState.data([]));
-  final selectedArticle = asyncSignal<Article?>(AsyncState.data(null));
+  final articles = asyncSignal<List<Article>>(AsyncState.loading());
+  final selectedArticle = asyncSignal<Article?>(AsyncState.loading());
 
   // ========== 方法 ==========
 

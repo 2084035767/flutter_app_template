@@ -22,7 +22,7 @@ class ArticleListPage extends HookWidget {
 
     useEffect(() {
       vm.loadArticles();
-      return null;
+      return;
     }, []);
 
     final AsyncState<List<Article>> async = useSignalValue(vm.articles);
@@ -41,7 +41,7 @@ class ArticleListPage extends HookWidget {
             );
           }
           return RefreshIndicator(
-            onRefresh: () => Future<void>.sync(() => vm.loadArticles()),
+            onRefresh: () => vm.loadArticles(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               itemCount: list.length,

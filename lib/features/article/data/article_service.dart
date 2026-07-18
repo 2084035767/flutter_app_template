@@ -22,8 +22,7 @@ class ArticleService implements ArticleRepository {
       final articles = await _api.getArticles();
       return Result.success(articles);
     } on DioException catch (e) {
-      final apiError = handleError(e);
-      return Result.failure(Failure.fromApiError(apiError));
+      return Result.failure(handleError(e));
     } catch (e) {
       return Result.failure(Failure.unknown(e.toString()));
     }
@@ -35,8 +34,7 @@ class ArticleService implements ArticleRepository {
       final article = await _api.getArticle(id);
       return Result.success(article);
     } on DioException catch (e) {
-      final apiError = handleError(e);
-      return Result.failure(Failure.fromApiError(apiError));
+      return Result.failure(handleError(e));
     } catch (e) {
       return Result.failure(Failure.unknown(e.toString()));
     }

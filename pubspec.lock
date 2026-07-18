@@ -293,18 +293,18 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: c21b9af62e78f86837638dda6c33506bd9444ca8a32cad2b99c07369cf9e2462
+      sha256: "84688491040b0ceb26575709a84d701c84ad4df4d8aff020adf6d85f155fb0dd"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.34.1"
+    version: "2.34.2"
   drift_dev:
     dependency: "direct dev"
     description:
       name: drift_dev
-      sha256: c563e0ea24a1b4ad316f860a206220a74dd9c6324f0e7e02a961dd4808dba942
+      sha256: "5c0e6ae3c2afcfc2e3f66ea51e7268622906a1e29fd0ee82e6a9b17bfd73a9b0"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.34.2+1"
+    version: "2.34.4"
   fake_async:
     dependency: transitive
     description:
@@ -383,26 +383,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gen
-      sha256: "303d72d4ee86f29243792e4022b67a47737f28f268d45348cb97b31a52e85887"
+      sha256: b2ffc4a2653baffc5bccd42a5d8631c7b71d7e57ded1de0c2dbdfcc5c4690dc1
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.14.1"
+    version: "5.15.0"
   flutter_gen_core:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "1413fbd0b67f76ac17800989013438caec3b64564c9ffd1eea6cd7e170d9b0e5"
+      sha256: "8ccb1f809642b34eb4857d8d7c4e5b41430a8cba8206177aae2ffe9d72b5eef3"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.14.1"
+    version: "5.15.0"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: db00922dd5f4c1aa33aeab7f74117f1cd224e7a1e8bea1e312b8d09b8101a909
+      sha256: "2b0fff517a75a14ed2eff749c1da2d6b8b568e542ad2b1c967356669a4c29bb2"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.14.1"
+    version: "5.15.0"
   flutter_hooks:
     dependency: "direct main"
     description:
@@ -494,10 +494,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: ba03d03bcaa2f6cb7bd920e3b5027181db75ab524f8891c8bc3aa603885b8055
+      sha256: d3f251381df389f7418d4dff416bd27c0a23138df22969aafd28c4a4b1bb3cd6
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.3.3"
+    version: "8.2.0"
   graphs:
     dependency: transitive
     description:
@@ -558,10 +558,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: f9881ff4998044947ec38d098bc7c8316ae1186fa786eddffdb867b9bc94dfce
+      sha256: "6300175e00616bbc832e2fc91bfa4d776af5402c81c7151bee6905bb08473c52"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.8.0"
+    version: "4.9.1"
   image_size_getter:
     dependency: transitive
     description:
@@ -802,10 +802,10 @@ packages:
     dependency: "direct main"
     description:
       name: path_provider
-      sha256: "909b84830485dbcd0308edf6f7368bc8fd76afa26a270420f34cabea2a6467a0"
+      sha256: a7f4874f987173da295a61c181b8ee71dab59b332a486b391babf26a1b884825
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.6"
   path_provider_android:
     dependency: transitive
     description:
@@ -978,10 +978,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "93ae5884a9df5d3bb696825bceb3a17590754548b5d740eba51500afc8d088f5"
+      sha256: "0634e64bd719f89c012f392938e173521f535d3ecaf66558fa94a056d22b5cc7"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.26"
+    version: "2.4.27"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1119,18 +1119,18 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "752d9d746052359a2022f588bb979f2e7c4e0f9e4b6a1c3121f7626a1574974b"
+      sha256: "61c7930bebf32c552ac5808c91bf33802e66711c9216090d3b5579c9f862e80c"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.4"
+    version: "3.4.0"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
       name: sqlite3_flutter_libs
-      sha256: eeb9e3a45207649076b808f8a5a74d68770d0b7f26ccef6d5f43106eee5375ad
+      sha256: "3ed7553eee7bb368f8950f58ba29f634e06e813c029aff6a0d60862b96de8454"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.42"
+    version: "0.6.0+eol"
   sqlparser:
     dependency: transitive
     description:
@@ -1319,10 +1319,10 @@ packages:
     dependency: transitive
     description:
       name: xml
-      sha256: "971043b3a0d3da28727e40ed3e0b5d18b742fa5a68665cca88e74b7876d5e025"
+      sha256: "67f0aff7be013d107995e9b75bf4e7f2c3ef2dfdb2c8e68024bba0a7fd5756a4"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.6.1"
+    version: "7.0.1"
   xxh3:
     dependency: transitive
     description:

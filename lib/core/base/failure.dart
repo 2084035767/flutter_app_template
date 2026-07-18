@@ -10,8 +10,6 @@ sealed class Failure implements Exception {
   const factory Failure.server(String message) = ServerFailure;
   const factory Failure.unknown(String message) = UnknownFailure;
 
-  /// 从已有的 Failure 创建（Service 兼容层）
-  factory Failure.fromApiError(Failure failure) => failure;
 }
 
 class NetworkFailure extends Failure {

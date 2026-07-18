@@ -9,9 +9,9 @@ import 'package:my_app/core/data/storage/auth_storage.dart';
 /// token 刷新由具体业务层（AuthService）处理，本拦截器不做自动重试。
 class AuthInterceptor extends Interceptor {
   final AuthStorage _auth;
+  bool _isClearing = false;
 
   AuthInterceptor(this._auth);
-
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final token = _auth.getToken();
@@ -23,8 +23,8 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {
-      // 清空认证信息，AuthStorage 的 signal 变化会触发 UI 重建
+    if (err.response?.statusCode == 401 && !_isClearing) {
+      _isClearing = true;
       _auth.clearAuth();
     }
     handler.next(err);

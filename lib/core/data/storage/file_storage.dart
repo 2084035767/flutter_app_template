@@ -8,16 +8,11 @@ import '../../logging/logging.dart';
 
 @Singleton()
 class FileStorage {
-  // 缓存目录，避免重复调用平台通道
-  late Future<Directory> _appDir;
-  late Future<Directory> _tempDir;
-  Future<void> init() async {
-    _appDir = getApplicationDocumentsDirectory();
-    _tempDir = getTemporaryDirectory();
-  }
+  Future<Directory>? _appDir;
+  Future<Directory>? _tempDir;
 
-  Future<Directory> get appDirectory => _appDir;
-  Future<Directory> get tempDirectory => _tempDir;
+  Future<Directory> get appDirectory => _appDir ??= getApplicationDocumentsDirectory();
+  Future<Directory> get tempDirectory => _tempDir ??= getTemporaryDirectory();
 
   Future<String> _buildPath(String filename, {bool useTemp = false}) async {
     final dir = useTemp ? await tempDirectory : await appDirectory;

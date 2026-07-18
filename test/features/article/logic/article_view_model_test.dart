@@ -18,10 +18,10 @@ void main() {
   });
 
   group('ArticleViewModel', () {
-    test('初始状态为 data([]), 无 error, 不 loading', () {
-      expect(vm.articles.value.isLoading, isFalse);
+    test('初始状态为 loading', () {
+      expect(vm.articles.value.isLoading, isTrue);
       expect(vm.articles.value.hasError, isFalse);
-      expect(vm.articles.value.value, isEmpty);
+      expect(vm.articles.value.value, isNull);
     });
 
     group('loadArticles()', () {
