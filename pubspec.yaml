@@ -72,7 +72,7 @@ dev_dependencies:
   freezed: ^4.0.0-dev.3 # 生成 copyWith/==/hashCode
 
   # ── Code Gen：DI ──
-  injectable_generator: ^3.1.0 # 生成 ServiceLocator 注册代码
+  injectable_generator: ^3.1.1 # 生成 ServiceLocator 注册代码
 
   # ── Code Gen：API ──
   retrofit_generator: ^10.2.1 # 生成 Retrofit 客户端实现
