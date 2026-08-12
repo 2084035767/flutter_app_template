@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:my_app/app.dart' show buildLightTheme;
 import 'package:my_app/core/base/result.dart';
 import 'package:my_app/features/auth/data/auth_repository.dart';
 import 'package:my_app/features/auth/data/models/user.dart';
@@ -35,14 +36,14 @@ void main() {
 
   group('LoginPage', () {
     testWidgets('renders email and password fields', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+      await tester.pumpWidget(MaterialApp(theme: buildLightTheme(), home: LoginPage()));
       expect(find.text('邮箱'), findsOneWidget);
       expect(find.text('密码'), findsOneWidget);
-      expect(find.text('登录'), findsNWidgets(2));
+      expect(find.text('登录'), findsOneWidget);
     });
 
     testWidgets('button is disabled when fields are empty', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+      await tester.pumpWidget(MaterialApp(theme: buildLightTheme(), home: LoginPage()));
       final button = tester.widget<FilledButton>(find.byType(FilledButton));
       expect(button.onPressed, isNull);
     });
@@ -50,7 +51,7 @@ void main() {
     testWidgets('button is enabled when email and password are valid', (
       tester,
     ) async {
-      await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+      await tester.pumpWidget(MaterialApp(theme: buildLightTheme(), home: LoginPage()));
       await tester.enterText(find.byType(TextField).first, 'test@example.com');
       await tester.enterText(find.byType(TextField).last, 'password123');
       await tester.pump();

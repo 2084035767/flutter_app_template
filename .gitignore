@@ -65,4 +65,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-nul
+
+# Windows 测试用 SQLite 原生库（sqlite3 3.x native assets 在 flutter test 不可用）
+# 下载: https://www.sqlite.org/download.html → sqlite-dll-win-x64-*.zip
+/sqlite3.dll

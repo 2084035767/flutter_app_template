@@ -50,7 +50,10 @@ final _textTheme = GoogleFonts.notoSansScTextTheme(
   ),
 );
 
-ThemeData _buildLightTheme() {
+/// 构建应用浅色主题（含 [AppThemeExtension.light] 扩展）。
+///
+/// 公开供测试与组件预览使用，确保与运行时主题一致。
+ThemeData buildLightTheme() {
   final base = FlexThemeData.light(
     colors: _colorScheme,
     surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
@@ -86,7 +89,10 @@ ThemeData _buildLightTheme() {
   );
 }
 
-ThemeData _buildDarkTheme() {
+/// 构建应用深色主题（含 [AppThemeExtension.dark] 扩展）。
+///
+/// 公开供测试与组件预览使用，确保与运行时主题一致。
+ThemeData buildDarkTheme() {
   final base = FlexThemeData.dark(
     colors: _colorScheme,
     surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
@@ -139,8 +145,8 @@ class MyApp extends HookWidget {
       isLoggedIn,
     ]);
 
-    final themeLight = useMemoized(_buildLightTheme);
-    final themeDark = useMemoized(_buildDarkTheme);
+    final themeLight = useMemoized(buildLightTheme);
+    final themeDark = useMemoized(buildDarkTheme);
 
     return MaterialApp.router(
       routerConfig: router.config(),
