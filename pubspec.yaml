@@ -84,7 +84,7 @@ dev_dependencies:
   auto_route_generator: ^10.6.0
 
   # ── Code Gen：通用 ──
-  build_runner: ^2.4.14 # codegen 执行引擎
+  build_runner: ^2.16.0 # codegen 执行引擎
   flutter_gen_runner: ^5.12.0 # 生成 Assets 引用
 
   # ── 静态分析 ──
