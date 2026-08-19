@@ -116,6 +116,24 @@ dart run tool/init_project.dart
 
 也可参照 [AGENTS.md](AGENTS.md) 手动操作。
 
+## 📖 示例代码说明
+
+脚手架自带两个完整示例模块，开箱即用（无需后端）：
+
+| 模块 | 路径 | 演示内容 |
+|------|------|----------|
+| 认证 | `lib/features/auth/` | 登录 → 存储 token → 个人中心读取用户信息 |
+| 文章 | `lib/features/article/` | 列表页 → 详情页，Retrofit API + 加载三态 |
+
+- **开箱即用**：`NetworkConfig.isMock` 默认 `true`，由 `msw_dio_interceptor` 拦截请求（Mock 规则见 `lib/core/data/network/dio_client.dart` 的 `_registerMockRules()`），无需后端即可跑通完整数据流。接入真实后端时改为 `false` 即可
+- **学习路径**：`flutter run` 跑起来 → 从 `page/`（UI）→ `logic/`（ViewModel）→ `data/`（API / Service / Model）逐层阅读，新功能模块照此结构复制
+- **删除示例**：确认了解结构后，删除 `lib/features/auth/` 与 `lib/features/article/` 两个目录，并同步清理：
+  1. `lib/core/routing/router.dart` 中的对应路由与 `@RoutePage` 注解
+  2. `lib/core/data/network/dio_client.dart` 中 `_registerMockRules()` 的对应 Mock 规则
+  3. `lib/features/home/page/main_page.dart` 底部导航中的文章 Tab
+  4. `lib/features/profile/page/profile_page.dart` 中对 `AuthViewModel` / `User` 的引用
+  5. 最后执行 `dart run build_runner build --delete-conflicting-outputs` 重新生成 DI 注册
+
 ## 📐 如何添加新功能模块
 
 ### 目录模板
