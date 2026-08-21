@@ -28,7 +28,7 @@ dependencies:
   dio_smart_retry: ^7.0.1
   pretty_dio_logger: ^1.4.0 # 调试日志，kDebugMode 下启用
   msw_dio_interceptor: ^1.0.5 # Mock API，isMock 开关控制
-  retrofit: ^4.9.2 # 运行时注解，API 客户端生成
+  retrofit: ^4.10.0 # 运行时注解，API 客户端生成
 
   # ── Data & Persistence ──
   shared_preferences: ^2.5.3
